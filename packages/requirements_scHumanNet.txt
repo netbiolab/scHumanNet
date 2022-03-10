@@ -1,0 +1,26 @@
+suitesparse
+bioconductor-batchelor
+bioconductor-biocparallel
+bioconductor-biocgenerics
+bioconductor-complexheatmap
+bioconductor-scater
+bioconductor-scran
+r-ggpubr
+r-gplots
+r-hdf5r
+r-ineq
+r-metap
+r-networkd3
+r-pals
+r-plotly
+r-r.utils
+r-rcpparmadillo
+r-rmdformats
+r-seriation
+r-stringr
+r-wordcloud
+r-devtools
+
+# optional
+r-harmony
+bioconductor-linnorm
