@@ -121,15 +121,11 @@ each barcode is annotated from the user’s preferred choice of methods
 ace[['Labels']] <- meta$CellType
 ```
 
-``` r
-ace <- compute.cluster.feature.specificity(ace, ace$Labels, "celltype_specificity_scores")
-Celltype.specific.networks = run.SCINET.clusters(ace, specificity.slot.name = "celltype_specificity_scores_feature_specificity")
-```
-
-Load HumanNetv3 interactome
-
+Load HumanNetv3 interactome and retrieve cell-type specific interactions
 ``` r
 data('HNv3_XC_LLS')
+ace <- compute.cluster.feature.specificity(ace, ace$Labels, "celltype_specificity_scores")
+Celltype.specific.networks = run.SCINET.clusters(ace, specificity.slot.name = "celltype_specificity_scores_feature_specificity")
 ```
 
 Sort each genepair alphabetically and add LLS weight from HumanNetv3.
