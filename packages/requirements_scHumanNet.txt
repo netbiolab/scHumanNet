@@ -21,7 +21,3 @@ r-stringr
 r-wordcloud
 r-devtools
 r-seurat
-
-# optional
-r-harmony
-bioconductor-linnorm

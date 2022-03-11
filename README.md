@@ -122,7 +122,7 @@ each barcode is annotated from the user’s preferred choice of methods
 ace[['Labels']] <- meta$CellType
 ```
 
-Load HumanNetv3 interactome and retrieve cell-type specific interactions
+Load HumanNetv3 interactome and retrieve cell-type specific interactions. Command `data('HNv3_XC_LLS')` loads the interactome as an igraph object named `graph.hn3`
 ``` r
 data('HNv3_XC_LLS')
 ace <- compute.cluster.feature.specificity(ace, ace$Labels, "celltype_specificity_scores")
@@ -130,7 +130,7 @@ Celltype.specific.networks = run.SCINET.clusters(ace, specificity.slot.name = "c
 ```
 
 Sort each genepair alphabetically and add LLS weight from HumanNetv3.
-Elements of `sorted.net.list` are stored as edgelist. This is later useful for assessing overlap between scHumanNets
+Elements of `sorted.net.list` are stored as edgelist. This is later useful for assessing edge overlap between scHumanNets
 
 ``` r
 sorted.net.list <- SortAddLLS(Celltype.specific.networks, reference.network = graph.hn3)
