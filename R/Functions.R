@@ -96,7 +96,7 @@ GetCentrality <- function(method = method, net.list = NULL){
 #' strength.list <- GetCentrality(net.list = sorted.net.list)
 #' rank.df.final <- CombinePercRank(perc.rank.list = strength.list)
 CombinePercRank <- function(perc.rank.list = perc.rank.list){
-  coverage.genes <- vertex_attr(graph.hn3)
+  coverage.genes <- V(graph.hn3)$name
   df <- lapply(perc.rank.list, data.frame)
   df <- df %>%
     imap(~setNames(.x, .y)) %>%
