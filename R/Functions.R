@@ -1,11 +1,11 @@
 #' SortAddLLS
 #'
-#' @description sort SCINET output edges alphabetically and add LLS weight derived from HumanNetv3 reference interactome
+#' @description Sort SCINET output edges alphabetically and add LLS weight derived from HumanNetv3 reference interactome
 #'
 #' @param Celltype.specific.networks SCINET output from function run.SCINET.clusters().
 #' @param reference.network reference network input, default is HumanNetv3.
 #'
-#' @return list of dataframe edgelist, with gene interaction and weights from SCINET and HumanNetv3.
+#' @return List of dataframe edgelist, with gene interaction and weights from SCINET and HumanNetv3.
 #' @export
 #'
 #' @examples
@@ -23,12 +23,12 @@ SortAddLLS <- function(Celltype.specific.networks = NULL, reference.network = gr
 
 #' GetCentrality
 #'
-#' @description get centrality values for each nodes of scHumanNet list. Ribosomal genes are excluded when calculating centralities
+#' @description Get centrality values for each nodes of scHumanNet list. Ribosomal genes are excluded when calculating centralities
 #'
-#' @param method centrality measure to calcuate, supports degree(strength), betweenness, closeness, and eigenvector
-#' @param net.list output of SortAddLLS()
+#' @param method Centrality measure to calcuate, supports degree(strength), betweenness, closeness, and eigenvector
+#' @param net.list Output of SortAddLLS()
 #'
-#' @return list of named vector, each value corresponding to node's centrality value
+#' @return List of named vector, each value corresponding to node's centrality value
 #' @export
 #'
 #' @examples
@@ -86,9 +86,9 @@ GetCentrality <- function(method = method, net.list = NULL){
 #'
 #' @description Calcuate percentile rank of each centrality measure. For those not in the network but in the nodes of HNv3, 0 value is assigned.
 #'
-#' @param perc.rank.list output of GetCentrality()
+#' @param perc.rank.list Output of GetCentrality()
 #'
-#' @return dataframe of celltypes and their centrality values
+#' @return Dataframe of celltypes and their centrality values
 #' @export
 #'
 #' @examples
@@ -121,9 +121,9 @@ CombinePercRank <- function(perc.rank.list = perc.rank.list){
 #'
 #' @description Get top n genes in terms of centrality for each scHumanNet
 #'
-#' @param perc.rank.list output of GetCentrality()
+#' @param perc.rank.list Output of GetCentrality()
 #'
-#' @return dataframe of celltypes and their top n centrality genes
+#' @return Dataframe of celltypes and their top n centrality genes
 #' @export
 #'
 #' @examples
@@ -153,15 +153,15 @@ TopHub <- function(rank.df.final = NULL, top.n = NULL){
 
 #' DiffPR
 #'
-#' @description get Differnence of normalized centrality values from the output of GetCentrality()
+#' @description Get differnence of normalized centrality values from the output of GetCentrality()
 #'
-#' @param rank.df.final output of CombinePercRank
-#' @param meta meta.data dataframe that contatins annotated celltypes and condition columns
-#' @param celltypes string character of column name that stores annoated celltypes
-#' @param condition string character of column name that stores disease vs control
-#' @param control character string that states which of the two condition in the condition column name that will be the control
+#' @param rank.df.final Output of CombinePercRank
+#' @param meta meta.data Dataframe that contatins annotated celltypes and condition columns
+#' @param celltypes String character of column name that stores annoated celltypes
+#' @param condition String character of column name that stores disease vs control
+#' @param control Character string that states which of the two condition in the condition column name that will be the control
 #'
-#' @return dataframe of celltypes and their diffPR values of each genes in the scHumanNet
+#' @return Dataframe of celltypes and their diffPR values of each genes in the scHumanNet
 #' @export
 #'
 #' @examples
@@ -220,12 +220,12 @@ DiffPR <- function(rank.df.final = NULL,
 
 #' FindDiffHub
 #'
-#' @description calcuate statistical signficance of diffPR values calculated with DiffPR()
+#' @description Calcuate statistical signficance of diffPR values calculated with DiffPR()
 #'
-#' @param diffPR.df output form diffPR()
-#' @param p.value thresholded pvalue, e.g. 0.05 or 0.01
+#' @param diffPR.df Output form diffPR()
+#' @param p.value Thresholded pvalue, e.g. 0.05 or 0.01
 #'
-#' @return dataframe of celltypes and their centrality values
+#' @return Dataframe of celltypes and their centrality values
 #' @export
 #'
 #' @examples
