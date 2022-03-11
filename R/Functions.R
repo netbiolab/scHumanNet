@@ -156,9 +156,9 @@ TopHub <- function(rank.df.final = NULL, top.n = NULL){
 #' @description get Differnence of normalized centrality values from the output of GetCentrality()
 #'
 #' @param rank.df.final output of CombinePercRank
-#' @param meta meta.data df that corresponds to each barcode
-#' @param celltypes column name that stores annoated celltypes
-#' @param condition column name taht stores disease vs control
+#' @param meta meta.data dataframe that contatins annotated celltypes and condition columns
+#' @param celltypes string character of column name that stores annoated celltypes
+#' @param condition string character of column name that stores disease vs control
 #' @param control character string that states which of the two condition in the condition column name that will be the control
 #'
 #' @return dataframe of celltypes and their diffPR values of each genes in the scHumanNet
