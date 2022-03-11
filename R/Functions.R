@@ -238,38 +238,38 @@ FindDiffHub <- function(diffPR.df = NULL, p.value = NULL){
   diffPR.df.list <- list()
   for (i in seq(1,16,2)){
     index <- (i+1) / 2
-    celltype <- colnames(df.final)[i]
+    celltype <- colnames(diffPR.df)[i]
     #make diffPR value with gene names
-    diffPR <- as.vector(df.final[,i+1])
-    names(diffPR) <- df.final[,i]
+    diffPR <- as.vector(diffPR.df[,i+1])
+    names(diffPR) <- diffPR.df[,i]
 
     diffPR.nonzero <- diffPR[diffPR != 0]
     rank <- seq(1,length(diffPR.nonzero),1)
     pvalue <- rank / length(diffPR.nonzero) #non paramatric pvalue calculation
 
-    diffPR.df <- cbind(names(diffPR.nonzero),diffPR.nonzero,pvalue, rep(celltype, length(diffPR.nonzero)))
+    diffPR.df.final <- cbind(names(diffPR.nonzero),diffPR.nonzero,pvalue, rep(celltype, length(diffPR.nonzero)))
 
     #sort by diffPRvalue
-    diffPR.df <- diffPR.df[order(diffPR.df[,2]),]
+    diffPR.df.final <- diffPR.df.final[order(diffPR.df.final[,2]),]
 
-    diffPR.df.list[[index]] <- diffPR.df
+    diffPR.df.list[[index]] <- diffPR.df.final
 
     print(paste(celltype, 'network:', length(diffPR.nonzero), 'nodes'))
 
     #calculate p-value based on absolute rank (we will consider up to 0.01)
 
   }
-  diffPR.df.final <- as.data.frame(do.call("rbind", diffPR.df.list))
-  colnames(diffPR.df.final) <- c('gene','diffPR','pvalue','celltype')
+  diffPR.df.result <- as.data.frame(do.call("rbind", diffPR.df.list))
+  colnames(diffPR.df.result) <- c('gene','diffPR','pvalue','celltype')
 
   #change numeric values to numeric class
-  diffPR.df.final[c('diffPR','pvalue')] <- sapply(diffPR.df.final[c('diffPR','pvalue')], function(x){as.numeric(as.character(x))})
+  diffPR.df.result[c('diffPR','pvalue')] <- sapply(diffPR.df.result[c('diffPR','pvalue')], function(x){as.numeric(as.character(x))})
 
   #get genes that have less then 0.01
   pvalue <- p.value
-  diffPR.df.final.pvalue <- diffPR.df.final[diffPR.df.final$pvalue < pvalue,]
+  diffPR.df.result.pvalue <- diffPR.df.result[diffPR.df.result$pvalue < pvalue,]
 
-  return(diffPR.df.final.pvalue)
+  return(diffPR.df.result.pvalue)
 }
 
 
