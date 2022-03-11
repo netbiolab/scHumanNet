@@ -20,6 +20,7 @@ r-seriation
 r-stringr
 r-wordcloud
 r-devtools
+r-seurat
 
 # optional
 r-harmony
