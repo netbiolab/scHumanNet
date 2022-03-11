@@ -67,6 +67,7 @@ devtools::install_github("JunhaCha/scHumanNet")
 (add Seurat if necessary)
 
 ``` r
+library(scHumanNet)
 library(ACTIONet)
 library(SCINET)
 library(Seurat)
