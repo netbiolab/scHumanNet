@@ -1,0 +1,50 @@
+#!/usr/bin/bash
+#this code takes in an unsorted pcc file and sorts it according to absolute value in column 3
+
+INPUT=$1
+if [ "$2" == "" ]; then
+	CORES=8
+else
+	CORES=$2
+fi
+
+echo INPUT = $INPUT
+echo "#CORES = $CORES"
+
+echo "removing neg sign"
+
+cat $INPUT | awk -F'\t' '{
+		if ($3 ~ /^-/) {
+			pos = substr($3, 2)
+			print $1"\t"$2"\t"pos"\t-"
+		}
+		else {
+			print $0
+		}
+	}'> ${INPUT}_TMP
+
+echo "sorting"
+
+sort -nrk3,3 --parallel=$CORES ${INPUT}_TMP > ${INPUT}_TMP2
+
+if [ -f ${INPUT}_TMP2 ]; then
+	rm ${INPUT}_TMP
+fi
+
+echo "attaching neg sign"
+
+cat ${INPUT}_TMP2 | awk -F'\t' '{
+		if ($4 == "-") {
+			print $1"\t"$2"\t-"$3
+		}
+		else {
+			print $0
+		}
+	}' > ${INPUT}_absorted
+
+
+if [ -f ${INPUT}_absorted ]; then
+	rm ${INPUT}_TMP2
+fi
+
+
