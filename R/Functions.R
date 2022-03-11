@@ -173,7 +173,7 @@ DiffPR <- function(rank.df.final = NULL,
                    celltypes = NULL ,
                    condition = NULL,
                    control = NULL,
-                   meta = meta){
+                   meta = NULL){
 
   rank.list <- list()
 
