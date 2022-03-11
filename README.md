@@ -274,4 +274,3 @@ diffPR.sig
 | …        | …      | …          | …           | …         |
 | COX16.1  | COX16  | 0.9793814  | 0.007617547 | Others    |
 | MAP2K1.1 | MAP2K1 | 0.9888977  | 0.003414762 | Others    |
-# scHumanNet
