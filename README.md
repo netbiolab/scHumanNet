@@ -133,24 +133,19 @@ data('HNv3_XC_LLS')
 ```
 
 Sort each genepair alphabetically and add LLS weight from HumanNetv3.
-Elements of `sorted.net.list` are stored as edgelist
+Elements of `sorted.net.list` are stored as edgelist. This is later useful for assessing overlap between scHumanNets
 
 ``` r
 sorted.net.list <- SortAddLLS(Celltype.specific.networks, reference.network = graph.hn3)
 ```
 
-Check each element of list
+Check each element of list and save scHumanNets, with both SCINET and LLS weights included in the edgelist for downstream analysis. R code used to analyze pan-cancer scHumanNet is included in the `figures` folder
 
 ``` r
 lapply(sorted.net.list, head)
-```
-
-Save cell-type-specific networks, with both SCINET and LLS weights
-included in the edgelist for downstream network analysis
-
-``` r
 saveRDS(sorted.net.list, './sorted_el_list.rds')
 ```
+
 
 ### Differential Network analysis with scHumanNet (Example 2)
 
