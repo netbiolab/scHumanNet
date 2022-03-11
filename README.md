@@ -130,7 +130,7 @@ Celltype.specific.networks = run.SCINET.clusters(ace, specificity.slot.name = "c
 ```
 
 Sort each genepair alphabetically and add LLS weight from HumanNetv3.
-Elements of `sorted.net.list` are stored as edgelist. This is later useful for assessing overlap between scHumanNets
+Elements of `sorted.net.list` are stored as edgelist. This is later useful for assessing edge overlap between scHumanNets
 
 ``` r
 sorted.net.list <- SortAddLLS(Celltype.specific.networks, reference.network = graph.hn3)
