@@ -84,7 +84,7 @@ GetCentrality <- function(method = method, net.list = NULL){
 
 #' CombinePercRank
 #'
-#' @description calcuate percentile rank of each centrality measure. for those not in the network, but in the nodes of HNv3, 0 value is assigned.
+#' @description Calcuate percentile rank of each centrality measure. For those not in the network but in the nodes of HNv3, 0 value is assigned.
 #'
 #' @param perc.rank.list output of GetCentrality()
 #'
