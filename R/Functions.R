@@ -12,7 +12,7 @@
 #' SortAddLLS(Celltype.specific.networks)
 SortAddLLS <- function(Celltype.specific.networks = NULL, reference.network = graph.hnv3){
   sorted.net.list <- lapply(Celltype.specific.networks, function(cell.net){
-    int.net <- intersection(refernce.network, cell.net, keep.all.vertices=F)
+    int.net <- intersection(reference.network, cell.net, keep.all.vertices=F)
     names(edge_attr(int.net)) <- c('LLS', 'scinet_weight')
     tmp <- t(apply(get.data.frame(int.net)[,1:2],1,sort))
     x <- cbind(tmp, get.data.frame(int.net)[,3:4])
