@@ -102,7 +102,7 @@ CombinePercRank <- function(perc.rank.list = perc.rank.list){
     imap(~setNames(.x, .y)) %>%
     map(tibble::rownames_to_column) %>%
     reduce(full_join, by = "rowname") %>%
-    mutate_all(tidyr::replace_na, 0)
+    mutate_all(~replace(., is.na(.), 0))
 
   add.genes <- coverage.genes[!(coverage.genes %in% df$rowname)]
 
