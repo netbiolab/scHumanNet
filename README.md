@@ -46,13 +46,12 @@ $ conda create -n scHumanNet R==4.0
 $ git clone https://github.com/JunhaCha/scHumanNet.git
 $ conda activate scHumanNet
 (scHumanNet) $ conda install --file ./scHumanNet/packages/requirements_scHumanNet.txt
-(scHumanNet) $ unzip ./ACTIONet_2.0.18_HNv3.zip -d ./ACTIONet_2.0.18_HNv3/
 ```
 
 install the modified version of ACTIONet
 
 ``` bash
-(scHumanNet) $ R CMD INSTALL ./ACTIONet_2.0.18_HNv3
+(scHumanNet) $ R CMD INSTALL ./scHumanNet/packages/ACTIONet_2.0.18_HNv3
 ```
 
 start R and install SCINET and scHumanNet
