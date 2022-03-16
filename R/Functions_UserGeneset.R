@@ -44,7 +44,7 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
     df <- t(connectivity.sig.all)
 
     # Gathering data, rearragne datraframe
-    data <- reshape::melt(df)
+    data <- reshape2::melt(df)
     colnames(data) <- c('scHumanNet', 'signature_name', 'connectivity')
 
     #add gene sig length
