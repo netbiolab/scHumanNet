@@ -7,4 +7,4 @@ Maintainer: Junha Cha <junhacha@yonsei.ac.kr>
 Description: this package computes reference-based cell type specific network and provides functions for downstream analysis. 
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

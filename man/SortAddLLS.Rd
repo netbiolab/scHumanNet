@@ -12,10 +12,10 @@ SortAddLLS(Celltype.specific.networks = NULL, reference.network = graph.hnv3)
 \item{reference.network}{reference network input, default is HumanNetv3.}
 }
 \value{
-list of dataframe edgelist, with gene interaction and weights from SCINET and HumanNetv3.
+List of dataframe edgelist, with gene interaction and weights from SCINET and HumanNetv3.
 }
 \description{
-sort SCINET output edges alphabetically and add LLS weight derived from HumanNetv3 reference interactome
+Sort SCINET output edges alphabetically and add LLS weight derived from HumanNetv3 reference interactome
 }
 \examples{
 SortAddLLS(Celltype.specific.networks)

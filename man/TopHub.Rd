@@ -7,10 +7,10 @@
 TopHub(rank.df.final = NULL, top.n = NULL)
 }
 \arguments{
-\item{perc.rank.list}{output of GetCentrality()}
+\item{perc.rank.list}{Output of GetCentrality()}
 }
 \value{
-dataframe of celltypes and their top n centrality genes
+Dataframe of celltypes and their top n centrality genes
 }
 \description{
 Get top n genes in terms of centrality for each scHumanNet

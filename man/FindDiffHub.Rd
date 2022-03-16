@@ -7,15 +7,15 @@
 FindDiffHub(diffPR.df = NULL, p.value = NULL)
 }
 \arguments{
-\item{diffPR.df}{output form diffPR()}
+\item{diffPR.df}{Output form diffPR()}
 
-\item{p.value}{thresholded pvalue, e.g. 0.05 or 0.01}
+\item{p.value}{Thresholded pvalue, e.g. 0.05 or 0.01}
 }
 \value{
-dataframe of celltypes and their centrality values
+Dataframe of celltypes and their centrality values
 }
 \description{
-calcuate statistical signficance of diffPR values calculated with DiffPR()
+Calcuate statistical signficance of diffPR values calculated with DiffPR()
 }
 \examples{
 sorted.net.list <- SortAddLLS(Celltype.specific.networks)

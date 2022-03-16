@@ -9,25 +9,25 @@ DiffPR(
   celltypes = NULL,
   condition = NULL,
   control = NULL,
-  meta = meta
+  meta = NULL
 )
 }
 \arguments{
-\item{rank.df.final}{output of CombinePercRank}
+\item{rank.df.final}{Output of CombinePercRank}
 
-\item{celltypes}{column name that stores annoated celltypes}
+\item{celltypes}{String character of column name that stores annoated celltypes}
 
-\item{condition}{column name taht stores disease vs control}
+\item{condition}{String character of column name that stores disease vs control}
 
-\item{control}{character string that states which of the two condition in the condition column name that will be the control}
+\item{control}{Character string that states which of the two condition in the condition column name that will be the control}
 
-\item{meta}{meta.data df that corresponds to each barcode}
+\item{meta}{meta.data Dataframe that contatins annotated celltypes and condition columns}
 }
 \value{
-dataframe of celltypes and their diffPR values of each genes in the scHumanNet
+Dataframe of celltypes and their diffPR values of each genes in the scHumanNet
 }
 \description{
-get Differnence of normalized centrality values from the output of GetCentrality()
+Get differnence of normalized centrality values from the output of GetCentrality()
 }
 \examples{
 sorted.net.list <- SortAddLLS(Celltype.specific.networks)

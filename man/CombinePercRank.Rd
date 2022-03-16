@@ -7,13 +7,13 @@
 CombinePercRank(perc.rank.list = perc.rank.list)
 }
 \arguments{
-\item{perc.rank.list}{output of GetCentrality()}
+\item{perc.rank.list}{Output of GetCentrality()}
 }
 \value{
-dataframe of celltypes and their centrality values
+Dataframe of celltypes and their centrality values
 }
 \description{
-calcuate percentile rank of each centrality measure. for those not in the network, but in the nodes of HNv3, 0 value is assigned.
+Calcuate percentile rank of each centrality measure. For those not in the network but in the nodes of HNv3, 0 value is assigned.
 }
 \examples{
 sorted.net.list <- SortAddLLS(Celltype.specific.networks)

@@ -7,15 +7,15 @@
 GetCentrality(method = method, net.list = NULL)
 }
 \arguments{
-\item{method}{centrality measure to calcuate, supports degree(strength), betweenness, closeness, and eigenvector}
+\item{method}{Centrality measure to calcuate, supports degree(strength), betweenness, closeness, and eigenvector}
 
-\item{net.list}{output of SortAddLLS()}
+\item{net.list}{Output of SortAddLLS()}
 }
 \value{
-list of named vector, each value corresponding to node's centrality value
+List of named vector, each value corresponding to node's centrality value
 }
 \description{
-get centrality values for each nodes of scHumanNet list. Ribosomal genes are excluded when calculating centralities
+Get centrality values for each nodes of scHumanNet list. Ribosomal genes are excluded when calculating centralities
 }
 \examples{
 strenght.list <- GetCentrality(method = 'degree', net.list = Celltype.specific.networks)
