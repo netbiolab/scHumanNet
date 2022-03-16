@@ -12,105 +12,106 @@
 #' data("ICMs")
 #' DeconvoluteNet(network.list = sorted.net.list, geneset = icm.genes)
 DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
-
-  #get node list for each celltype
-  node.list <- lapply(network.list, function(net){
-    genes.all <- unique(c(as.character(net[,1]),as.character(net[,2])))
-  })
-  names(node.list) <- names(network.list)
-
-
-  #check if geneset is a list
-  if (is.list(geneset)){
-    #if the list does not have a specific name provide them as default
-    if (is.null(names(geneset))){
-      names(geneset) <- paste0('Geneset_',seq(length(geneset)))
+    
+    #get node list for each celltype
+    node.list <- lapply(network.list, function(net){
+      genes.all <- unique(c(as.character(net[,1]),as.character(net[,2])))
+    })
+    names(node.list) <- names(network.list)
+    
+    
+    #check if geneset is a list
+    if (is.list(geneset)){
+      #if the list does not have a specific name provide them as default
+      if (is.null(names(geneset))){
+        names(geneset) <- paste0('Geneset_',seq(length(geneset)))
+      }
+      
+      sig.list <- list()
+      for (i in seq_along(geneset)){
+        sig.genes <- geneset[[i]]
+        connectivity.sig <- lapply(network.list, function(net){
+          nrow(net[(net[,1] %in% sig.genes & net[,2] %in% sig.genes), ])
+        })
+        names(connectivity.sig) <- names(network.list)
+        connectivity.sig <- dplyr::bind_rows(connectivity.sig)
+        sig.list[[i]] <- connectivity.sig
+      }
+      
+      connectivity.sig.all <- as.data.frame(dplyr::bind_rows(sig.list))
+      rownames(connectivity.sig.all) <- names(geneset)
+      
+      df <- t(connectivity.sig.all)
+      
+      # Gathering data, rearragne datraframe
+      data <- reshape2::melt(df)
+      colnames(data) <- c('scHumanNet', 'signature_name', 'connectivity')
+      
+      #add gene sig length
+      data$signature_gene_num <- lengths(bc.sig.list[as.character(data$signature_name)])
+      
+      #add geneset length detected in each celltype net
+      detected.sig <- list()
+      for (i in seq_along(table(data$signature_name))){
+        signature <- geneset[[i]]
+        sig.f <- lapply(node.list, function(node){length(signature[signature %in% node])})
+        names(sig.f) <- names(node.list)
+        detected.sig[[i]] <- sig.f
+      }
+      
+      names(detected.sig) <- names(table(data$signature_name))
+      detected.sig <- unlist(detected.sig)
+      data$detected.sig.num <- detected.sig
+      
+      #normalize connectivity count values by number of signature genes
+      #data$connectivity.n <- data$connectivity / data$signature_gene_num
+      data$connectivity.normalized <- data$connectivity / data$detected.sig.num
+      
+      #remove signatures with all colSum 0
+      low.signames <- colnames(as.data.frame(df[,colSums(df) == 0]))
+      data.f <- data[!(data$signature_name %in% low.signames),]
+      print(paste('Signatures', low.signames, 'discarded'))
+      data.f <- data.f[!is.nan(data.f$connectivity.normalized),]
+      
     }
-
-    sig.list <- list()
-    for (i in seq_along(geneset)){
-      sig.genes <- geneset[[i]]
+    else{
+      print('Only one geneset detected')
+      sig.list <- list()
+      sig.genes <- geneset
       connectivity.sig <- lapply(network.list, function(net){
         nrow(net[(net[,1] %in% sig.genes & net[,2] %in% sig.genes), ])
       })
-      names(connectivity.sig) <- names(network.list)
       connectivity.sig <- dplyr::bind_rows(connectivity.sig)
-      sig.list[[i]] <- connectivity.sig
+      sig.list[[1]] <- connectivity.sig
+      
+      connectivity.sig.all <- as.data.frame(dplyr::bind_rows(sig.list))
+      df <- t(connectivity.sig.all)
+      
+      # Gathering data, rearragne datraframe
+      data <- as.data.frame(df)
+      colnames(data) <- 'connectivity'
+      
+      #add gene sig length
+      data$signature_gene_num <- rep(length(geneset), nrow(data))
+      
+      #add genes detected within the geneset in each celltype net
+      sig.f <- lapply(node.list, function(node){length(geneset[geneset %in% node])})
+      detected.sig <- unlist(sig.f)
+      data$detected.sig.num <- detected.sig #user can know how many of their genesets were actually in the scHumanNets, but normalization does not happen here becuase detected num also is part of the connectivity measurement
+      
+      #normalize connectivity count values by number of signature genes....
+      #data$connectivity.n <- data$connectivity / data$signature_gene_num
+      #data$connectivity.n.detected <- data$connectivity / data$detected.sig.num ...this is not informative in single geneset undection should also be regarded
+      
+      data.f <- data
+      if (data.f$connectivity == 0){
+        print('this geneset had no connectivity in this network. try a different geneset')
+      }
     }
-
-    connectivity.sig.all <- as.data.frame(dplyr::bind_rows(sig.list))
-    rownames(connectivity.sig.all) <- names(geneset)
-
-    df <- t(connectivity.sig.all)
-
-    # Gathering data, rearragne datraframe
-    data <- reshape2::melt(df)
-    colnames(data) <- c('scHumanNet', 'signature_name', 'connectivity')
-
-    #add gene sig length
-    data$signature_gene_num <- lengths(bc.sig.list[as.character(data$signature_name)])
-
-    #add geneset length detected in each celltype net
-    detected.sig <- list()
-    for (i in seq_along(table(data$signature_name))){
-      signature <- geneset[[i]]
-      sig.f <- lapply(node.list, function(node){length(signature[signature %in% node])})
-      names(sig.f) <- names(node.list)
-      detected.sig[[i]] <- sig.f
-    }
-
-    names(detected.sig) <- names(table(data$signature_name))
-    detected.sig <- unlist(detected.sig)
-    data$detected.sig.num <- detected.sig
-
-    #normalize connectivity count values by number of signature genes
-    #data$connectivity.n <- data$connectivity / data$signature_gene_num
-    data$connectivity.normalized <- data$connectivity / data$detected.sig.num
     
-    #remove signatures with all colSum 0
-    low.signames <- colnames(as.data.frame(df[,colSums(df) == 0]))
-    data.f <- data[data$signature_name != low.signames,]
-    print(paste('Signatures', low.signames, discarded))
-
-  }
-  else{
-    print('Only one geneset detected')
-    sig.list <- list()
-    sig.genes <- geneset
-    connectivity.sig <- lapply(network.list, function(net){
-      nrow(net[(net[,1] %in% sig.genes & net[,2] %in% sig.genes), ])
-      })
-    connectivity.sig <- dplyr::bind_rows(connectivity.sig)
-    sig.list[[1]] <- connectivity.sig
-
-    connectivity.sig.all <- as.data.frame(dplyr::bind_rows(sig.list))
-    df <- t(connectivity.sig.all)
-
-    # Gathering data, rearragne datraframe
-    data <- as.data.frame(df)
-    colnames(data) <- 'connectivity'
-
-    #add gene sig length
-    data$signature_gene_num <- rep(length(geneset), nrow(data))
-
-    #add genes detected within the geneset in each celltype net
-    sig.f <- lapply(node.list, function(node){length(geneset[geneset %in% node])})
-    detected.sig <- unlist(sig.f)
-    data$detected.sig.num <- detected.sig #user can know how many of their genesets were actually in the scHumanNets, but normalization does not happen here becuase detected num also is part of the connectivity measurement
-
-    #normalize connectivity count values by number of signature genes....
-    #data$connectivity.n <- data$connectivity / data$signature_gene_num
-    #data$connectivity.n.detected <- data$connectivity / data$detected.sig.num ...this is not informative in single geneset undection should also be regarded
-    
-    #remove signatures with all colSum 0
-    low.signames <- colnames(as.data.frame(df[,colSums(df) == 0]))
-    data.f <- data[data$signature_name != low.signames,]
-    print('this signature had no conncectivity in all scHumanNet')
-
-  }
-
-  return(data)
+    return(data.f)
 }
+
 
 
 #' Connectivity
