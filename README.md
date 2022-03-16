@@ -86,8 +86,8 @@ The 10X count folder and the metadata can be downloaded from
 <http://blueprint.lambrechtslab.org>
 
 ``` r
-counts <- Read10X('/your/path/to/CRC_counts/')
-meta <- read.table('/your/path/to/CRC_metadata.csv', header = T, sep = ',')
+counts <- Read10X('/your/path/to/BC_counts/')
+meta <- read.table('/your/path/to/BC_metadata.csv', header = T, sep = ',')
 ```
 
 Convert to sce  
@@ -157,7 +157,54 @@ icm.connectivity.nulltest.list <- lapply(sorted.net.list, function(net){Connecti
 ```
 
 ## Using multiple user genesets for comparison
-Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for `DeconvoluteNet()`. In this case the output dataframe contains the
+Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for parameter geneset of `DeconvoluteNet()`. In this case the output dataframe contains column Connectivity number normlalized for the length of detected signatures. It is often informative to find which geneset have the most co-functional properties by utilizing scaater plots. Here we show that in the breast cancer signature genesets, signature GGI97, Robust, Tcell have most connectivity.
+``` r
+data("BC_signatures")
+bcsig.connectivity <- DeconvoluteNet(network = sorted.net.list, geneset = bc.sig.list)
+
+#reorder scHumanNet
+data$scNET <- factor(data$scHumanNet, levels = c("ECnet", "CAFnet", 'Cancernet','Bnet','Myenet','Tnet'))
+
+#remove signatures with all colSum 0, 6 signatures removed
+low.signames <- colnames(as.data.frame(df[,colSums(df) == 0]))
+data.f <- data[data$signature_name != low.signames,]
+
+p1 <- ggplot(data.f, aes(x=signature_name, y=connectivity, fill=scHumanNet))+
+  geom_bar(position = 'stack', stat = 'identity') +
+  theme_classic()+
+  theme(
+    panel.grid=element_blank(),
+    legend.text=element_text(size=10),
+    text = element_text(size=12),
+    legend.title = element_blank(),
+    axis.title.x = element_blank()
+  )+  
+  ylab("Absolute # of within group connectivity")+
+  xlab("Breast Cancer prognostic signatures") +
+  rotate_x_text(45) +
+  scale_y_continuous(expand = c(0, 0))
+  
+p2 <- ggplot(data.f, aes(x=signature_name, y=connectivity.n, fill=scHumanNet))+
+  geom_bar(position = 'stack', stat = 'identity') +
+  theme_classic()+
+  theme(
+    panel.grid=element_blank(),
+    legend.text=element_text(size=10),
+    text = element_text(size=12),
+    legend.title = element_blank(),
+    axis.title.x = element_blank()
+  )+  
+  ylab("Normalized # of within group connectivity")+
+  xlab("Breast Cancer prognostic signatures") +
+  rotate_x_text(45) +
+  scale_y_continuous(expand = c(0, 0))
+  
+ library(patchwork) 
+ p1 + p2
+```
+
+
+
 
 
 
