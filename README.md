@@ -142,6 +142,18 @@ lapply(sorted.net.list, head)
 saveRDS(sorted.net.list, './sorted_el_list.rds')
 ```
 
+## Network Connectivity Deconvolution with user input geneset
+With scHumanNet we also provide a computaitonal framework to statistically asssess the connectivty of a given geneset at the cellular level of scHumanNets. In this example we use the Immune Checkpoint molecules(ICms) as a geneset to assess in what celltypes these genesets have strong co-functional characteristic. In common cases user may use a DEG derived genesets or bulk sample derived signatures genes to find whether the genesets' cofunctionality is supported constructed scHumanNet models.
+
+``` r
+data('ICMs')
+
+
+
+```
+
+
+
 
 ### Differential Network analysis with scHumanNet (Example 2)
 
