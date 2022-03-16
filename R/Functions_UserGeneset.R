@@ -153,8 +153,8 @@ Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
       #this is to ensure that we don't pick the same genes randomly
       degree.centrality.f <- degree.centrality[!(names(degree.centrality) %in% selected)]
 
-      #pick a pool of nodes that have within +-10 percent of nodes
-      degree.range <- c(floor(0.9 * gene.degree), ceiling(1.1 * gene.degree))
+      #pick a pool of nodes that have within +-20 percent of nodes
+      degree.range <- c(floor(0.8 * gene.degree), ceiling(1.2 * gene.degree))
       node.pool <- degree.centrality.f[degree.range[1] <= degree.centrality.f | degree.centrality.f >= degree.range[2]]
 
       #pick a random node from this pool
@@ -177,7 +177,8 @@ Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
   pvalue <- rank(-(connectivity.final),ties.method = 'last')[simulate.num + 1] / simulate.num
   #distribution
   output.list <- list(null.distribution = connectivity.random, p.value = pvalue, detected.geneset = detected.genes)
-
+  
+  print('testing')
   return(output.list)
 }
 
