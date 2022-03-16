@@ -162,7 +162,7 @@ Of note, we can also compare the functional connectivity of multiple genesets. I
 ``` r
 library(ggpubr)
 library(ggplot2)
-library(ggprepel)
+library(ggrepel)
 library(patchwork) 
 
 data("BC_signatures")
