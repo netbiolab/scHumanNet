@@ -125,12 +125,12 @@ Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
 
   #only use detected number of input geneset in the network
   if (isTRUE(geneset %in% names(degree.centrality))){
-    print('all genes in the network')
+    print('All genes in the network')
   }
   else {
     detected.genes <- geneset[geneset %in% names(degree.centrality)]
     print(paste(length(detected.genes), 'genes detected out of', length(geneset), 'input genes'))
-    print(paste('connectivity of', length(detected.genes), 'will be assessed...'))
+    print(paste('Connectivity of', length(detected.genes), 'will be assessed...'))
   }
 
 
@@ -173,6 +173,7 @@ Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
 
   #get pvalue of user geneset connectivty and the connectiviity.random
   connectivity <- nrow(network[(network[,1] %in% geneset & network[,2] %in% geneset), ])
+  print(paste("This geneset had", connectivity, "within-group edges in the network"))  
   connectivity.final <- c(connectivity.random, connectivity)
   pvalue <- rank(-(connectivity.final),ties.method = 'last')[simulate.num + 1] / simulate.num
   #distribution
