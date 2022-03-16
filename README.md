@@ -143,18 +143,20 @@ saveRDS(sorted.net.list, './sorted_el_list.rds')
 ```
 
 ## Network Connectivity Deconvolution with user input geneset
-With scHumanNet we also provide a computaitonal framework to statistically asssess the connectivty of a given geneset at the cellular level of scHumanNets. In this example we use the Immune Checkpoint molecules(ICms) as a geneset to assess in what celltypes these genesets have strong co-functional characteristic. In common cases user may use a DEG derived genesets or bulk sample derived signatures genes to find whether the genesets' cofunctionality is supported constructed scHumanNet models. 
+With scHumanNet we also provide a computaitonal framework to statistically asssess the connectivty of a given geneset at the cellular level of scHumanNets. In this example we use the Immune Checkpoint molecules(ICMs) as a geneset to assess in what celltypes these genesets have strong co-functional characteristic. In common cases user may use a DEG derived genesets or bulk sample derived signatures genes to find whether the genesets' cofunctionality is supported constructed scHumanNet models. 
 
 The output of `Connectivity()` is a list with three elements: 1. the null distribution vector of selected random gene's connectivity. 2. non-parametric pvalue of the user-input geneset. 3. geneset vector that was detected in the input scHumanNet
 
 ``` r
-data('ICMs')
 data("ICMs")
-icm.connectivity <- DeconvoluteNet(network = sorted.net.list[['T_cell']], geneset = icm.genes)
-icm.connectivity.nulltest <- Connectivity(network = sorted.net.list[['T)cell'], geneset = icm.genes)
+icm.connectivity <- DeconvoluteNet(network = sorted.net.list, geneset = icm.genes)
+icm.connectivity.tcell <- Connectivity(network = sorted.net.list[["T_cell"]], geneset = icm.genes, simulate.num = 10000)
+
+#we can also perform a conncectivity test for all scHumanNets. this will take some time...
+icm.connectivity.nulltest.list <- lapply(sorted.net.list, function(net){Connectivity(network = net, geneset = icm.genes, simulated.num=10000))
 ```
 
-## Using multiple genesets for comparison
+## Using multiple user genesets for comparison
 Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for `DeconvoluteNet()`. In this case the output dataframe contains the
 
 
