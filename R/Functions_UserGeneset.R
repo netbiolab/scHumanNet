@@ -178,7 +178,6 @@ Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
   #distribution
   output.list <- list(null.distribution = connectivity.random, p.value = pvalue, detected.geneset = detected.genes)
   
-  print('testing')
   return(output.list)
 }
 
