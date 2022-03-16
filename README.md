@@ -160,32 +160,15 @@ icm.connectivity.nulltest.list <- lapply(sorted.net.list, function(net){Connecti
 Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for parameter geneset of `DeconvoluteNet()`. In this case the output dataframe contains column Connectivity number normlalized for the length of detected signatures. It is often informative to find which geneset have the most co-functional properties by utilizing scatter plots. Here we show that in the breast cancer signature genesets, signature GGI97, Robust, Tcell have most connectivity. In practice, this function can be potentially used to deconvolute previously identified genesets and analyze the cellular context of co-functionality of user's scRNA seq dataset.
 
 ``` r
+library(ggpubr)
+library(ggplot2)
+library(ggprepel)
+library(patchwork) 
+
 data("BC_signatures")
 bcsig.connectivity <- DeconvoluteNet(network = sorted.net.list, geneset = bc.sig.list)
 
-#reorder scHumanNet
-data$scNET <- factor(data$scHumanNet, levels = c("ECnet", "CAFnet", 'Cancernet','Bnet','Myenet','Tnet'))
-
-#remove signatures with all colSum 0, 6 signatures removed
-low.signames <- colnames(as.data.frame(df[,colSums(df) == 0]))
-data.f <- data[data$signature_name != low.signames,]
-
-p1 <- ggplot(data.f, aes(x=signature_name, y=connectivity, fill=scHumanNet))+
-  geom_bar(position = 'stack', stat = 'identity') +
-  theme_classic()+
-  theme(
-    panel.grid=element_blank(),
-    legend.text=element_text(size=10),
-    text = element_text(size=12),
-    legend.title = element_blank(),
-    axis.title.x = element_blank()
-  )+  
-  ylab("Absolute # of within group connectivity")+
-  xlab("Breast Cancer prognostic signatures") +
-  rotate_x_text(45) +
-  scale_y_continuous(expand = c(0, 0))
-  
-p2 <- ggplot(data.f, aes(x=signature_name, y=connectivity.n, fill=scHumanNet))+
+p1 <- ggplot(bcsig.connectivity, aes(x=signature_name, y=connectivity.normalized, fill=scHumanNet))+
   geom_bar(position = 'stack', stat = 'identity') +
   theme_classic()+
   theme(
@@ -200,7 +183,13 @@ p2 <- ggplot(data.f, aes(x=signature_name, y=connectivity.n, fill=scHumanNet))+
   rotate_x_text(45) +
   scale_y_continuous(expand = c(0, 0))
   
- library(patchwork) 
+p2 <- ggscatter(hnv3.connectivity.33sig, x = "siggene_num_detected", y = "connectivity", 
+                label = "name", repel = TRUE,
+                add = 'reg.line', conf.int = T,
+                add.params = list(color='blue', fill = 'lightgray')) +
+  stat_cor(method = "pearson", label.x = 200, label.y = 1000)
+  
+ 
  p1 + p2
 ```
 
