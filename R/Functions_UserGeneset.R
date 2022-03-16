@@ -66,6 +66,11 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
     #normalize connectivity count values by number of signature genes
     #data$connectivity.n <- data$connectivity / data$signature_gene_num
     data$connectivity.normalized <- data$connectivity / data$detected.sig.num
+    
+    #remove signatures with all colSum 0
+    low.signames <- colnames(as.data.frame(df[,colSums(df) == 0]))
+    data.f <- data[data$signature_name != low.signames,]
+    print(paste('Signatures', low.signames, discarded))
 
   }
   else{
@@ -96,6 +101,11 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
     #normalize connectivity count values by number of signature genes....
     #data$connectivity.n <- data$connectivity / data$signature_gene_num
     #data$connectivity.n.detected <- data$connectivity / data$detected.sig.num ...this is not informative in single geneset undection should also be regarded
+    
+    #remove signatures with all colSum 0
+    low.signames <- colnames(as.data.frame(df[,colSums(df) == 0]))
+    data.f <- data[data$signature_name != low.signames,]
+    print('this signature had no conncectivity in all scHumanNet')
 
   }
 
