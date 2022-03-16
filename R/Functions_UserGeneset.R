@@ -65,7 +65,7 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
 
     #normalize connectivity count values by number of signature genes
     #data$connectivity.n <- data$connectivity / data$signature_gene_num
-    data$connectivity.n. <- data$connectivity / data$detected.sig.num
+    data$connectivity.normalized <- data$connectivity / data$detected.sig.num
 
   }
   else{
