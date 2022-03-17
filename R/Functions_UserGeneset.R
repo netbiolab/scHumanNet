@@ -72,6 +72,7 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
       data.f <- data[!(data$signature_name %in% low.signames),]
       print(paste('Signatures', low.signames, 'discarded'))
       data.f <- data.f[!is.nan(data.f$connectivity.normalized),]
+      data.f <- droplevels(data.f)
       
     }
     else{
