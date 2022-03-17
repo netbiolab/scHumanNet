@@ -204,7 +204,6 @@ p2 <- ggscatter(hnv3.connectivity.sig, x = "siggene_num_detected", y = "connecti
  
  p2 + p1
 ```
-
 ![](images/bcsig_deconvolution.png)
 
 
