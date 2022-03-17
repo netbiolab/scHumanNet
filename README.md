@@ -86,8 +86,8 @@ The 10X count folder and the metadata can be downloaded from
 <http://blueprint.lambrechtslab.org>
 
 ``` r
-counts <- Read10X('/your/path/to/CRC_counts/')
-meta <- read.table('/your/path/to/CRC_metadata.csv', header = T, sep = ',')
+counts <- Read10X('/your/path/to/BC_counts/')
+meta <- read.table('/your/path/to/BC_metadata.csv', header = T, sep = ',')
 ```
 
 Convert to sce  
@@ -143,19 +143,58 @@ saveRDS(sorted.net.list, './sorted_el_list.rds')
 ```
 
 ## Network Connectivity Deconvolution with user input geneset
-With scHumanNet we also provide a computaitonal framework to statistically asssess the connectivty of a given geneset at the cellular level of scHumanNets. In this example we use the Immune Checkpoint molecules(ICms) as a geneset to assess in what celltypes these genesets have strong co-functional characteristic. In common cases user may use a DEG derived genesets or bulk sample derived signatures genes to find whether the genesets' cofunctionality is supported constructed scHumanNet models. 
+With scHumanNet we also provide a computaitonal framework to statistically asssess the connectivty of a given geneset at the cellular level of scHumanNets. In this example we use the Immune Checkpoint molecules(ICMs) as a geneset to assess in what celltypes these genesets have strong co-functional characteristic. In common cases user may use a DEG derived genesets or bulk sample derived signatures genes to find whether the genesets' cofunctionality is supported constructed scHumanNet models. 
 
 The output of `Connectivity()` is a list with three elements: 1. the null distribution vector of selected random gene's connectivity. 2. non-parametric pvalue of the user-input geneset. 3. geneset vector that was detected in the input scHumanNet
 
 ``` r
-data('ICMs')
 data("ICMs")
-icm.connectivity <- DeconvoluteNet(network = sorted.net.list[['T_cell']], geneset = icm.genes)
-icm.connectivity.nulltest <- Connectivity(network = sorted.net.list[['T)cell'], geneset = icm.genes)
+icm.connectivity <- DeconvoluteNet(network = sorted.net.list, geneset = icm.genes)
+icm.connectivity.tcell <- Connectivity(network = sorted.net.list[["T_cell"]], geneset = icm.genes, simulate.num = 10000)
+
+#we can also perform a conncectivity test for all scHumanNets. this will take some time...
+icm.connectivity.nulltest.list <- lapply(sorted.net.list, function(net){Connectivity(network = net, geneset = icm.genes, simulated.num=10000))
 ```
 
-## Using multiple genesets for comparison
-Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for `DeconvoluteNet()`. In this case the output dataframe contains the
+## Using multiple user genesets for comparison
+Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for parameter geneset of `DeconvoluteNet()`. In this case the output dataframe contains column Connectivity number normlalized for the length of detected signatures. It is often informative to find which geneset have the most co-functional properties by utilizing scatter plots. Here we show that in the breast cancer signature genesets, signature GGI97, Robust, Tcell have most connectivity. In practice, this function can be potentially used to deconvolute previously identified genesets and analyze the cellular context of co-functionality of user's scRNA seq dataset.
+
+``` r
+library(ggpubr)
+library(ggplot2)
+library(ggrepel)
+library(patchwork) 
+
+data("BC_signatures")
+bcsig.connectivity <- DeconvoluteNet(network = sorted.net.list, geneset = bc.sig.list)
+
+p1 <- ggplot(bcsig.connectivity, aes(x=signature_name, y=connectivity.normalized, fill=scHumanNet))+
+  geom_bar(position = 'stack', stat = 'identity') +
+  theme_classic()+
+  theme(
+    panel.grid=element_blank(),
+    legend.text=element_text(size=10),
+    text = element_text(size=12),
+    legend.title = element_blank(),
+    axis.title.x = element_blank()
+  )+  
+  ylab("Normalized # of within group connectivity")+
+  xlab("Breast Cancer prognostic signatures") +
+  rotate_x_text(45) +
+  scale_y_continuous(expand = c(0, 0))
+  
+p2 <- ggscatter(hnv3.connectivity.33sig, x = "siggene_num_detected", y = "connectivity", 
+                label = "name", repel = TRUE,
+                add = 'reg.line', conf.int = T,
+                add.params = list(color='blue', fill = 'lightgray')) +
+  stat_cor(method = "pearson", label.x = 200, label.y = 1000)
+  
+ 
+ p1 + p2
+```
+
+
+
 
 
 
