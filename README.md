@@ -159,7 +159,7 @@ icm.connectivity.nulltest.list <- lapply(sorted.net.list, function(net){Connecti
 ## Using multiple user genesets for comparison
 Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for parameter geneset of `DeconvoluteNet()`. In this case the output dataframe contains column Connectivity number normlalized for the length of detected signatures. It is often informative to find which geneset have the most co-functional properties by utilizing scatter plots. Here we show that in the breast cancer signature genesets, signature GGI97, Robust, Tcell have most connectivity. In practice, this function can be potentially used to deconvolute previously identified genesets and analyze the cellular context of co-functionality of user's scRNA seq dataset.
 
-it is often times useful to see which geneset has most cofunctionality. We show in the example here that geneset GGI97, Robust, Tcell had the most cofunctional geneset.
+it is often times useful to see which geneset has most co-functionality. We show in the example here that geneset GGI97, Robust, Tcell is the most cofunctional geneset when assessed for their connectivty in the entire HumanNetv3 interactiome compared to the numeber of geneset. For detailed use of the reference interactome, please refer to [the HumanNetv3 Web Server](https://www.inetbio.org/humannet/)
 
 ``` r
 library(ggpubr)
@@ -205,7 +205,7 @@ p2 <- ggscatter(hnv3.connectivity.sig, x = "siggene_num_detected", y = "connecti
  p2 + p1
 ```
 
-
+![](images/bcsig_deconvolution.png)
 
 
 
