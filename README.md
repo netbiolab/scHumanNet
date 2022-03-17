@@ -159,6 +159,8 @@ icm.connectivity.nulltest.list <- lapply(sorted.net.list, function(net){Connecti
 ## Using multiple user genesets for comparison
 Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for parameter geneset of `DeconvoluteNet()`. In this case the output dataframe contains column Connectivity number normlalized for the length of detected signatures. It is often informative to find which geneset have the most co-functional properties by utilizing scatter plots. Here we show that in the breast cancer signature genesets, signature GGI97, Robust, Tcell have most connectivity. In practice, this function can be potentially used to deconvolute previously identified genesets and analyze the cellular context of co-functionality of user's scRNA seq dataset.
 
+it is often times useful to see which geneset has most cofunctionality. We show in the example here that geneset GGI97, Robust, Tcell had the most cofunctional geneset.
+
 ``` r
 library(ggpubr)
 library(ggplot2)
@@ -167,6 +169,13 @@ library(patchwork)
 
 data("BC_signatures")
 bcsig.connectivity <- DeconvoluteNet(network = sorted.net.list, geneset = bc.sig.list)
+
+
+#get sum of connectivity for each signature
+connectivity.sum <- with(bcsig.connectivity,tapply(connectivity.normalized,signature_name,FUN=sum))
+mylevels <- names(connectivity.sum[order(connectivity.sum, decreasing = T)])
+
+bcsig.connectivity$signature_name <- factor(bcsig.connectivity$signature_name, levels = mylevels)
 
 p1 <- ggplot(bcsig.connectivity, aes(x=signature_name, y=connectivity.normalized, fill=scHumanNet))+
   geom_bar(position = 'stack', stat = 'identity') +
@@ -182,15 +191,18 @@ p1 <- ggplot(bcsig.connectivity, aes(x=signature_name, y=connectivity.normalized
   xlab("Breast Cancer prognostic signatures") +
   rotate_x_text(45) +
   scale_y_continuous(expand = c(0, 0))
+
+
+hnv3.connectivity.sig <- GenesetHnv3(geneset = bc.sig.list)
   
-p2 <- ggscatter(hnv3.connectivity.33sig, x = "siggene_num_detected", y = "connectivity", 
+p2 <- ggscatter(hnv3.connectivity.sig, x = "siggene_num_detected", y = "connectivity", 
                 label = "name", repel = TRUE,
                 add = 'reg.line', conf.int = T,
                 add.params = list(color='blue', fill = 'lightgray')) +
   stat_cor(method = "pearson", label.x = 200, label.y = 1000)
   
  
- p1 + p2
+ p2 + p1
 ```
 
 
