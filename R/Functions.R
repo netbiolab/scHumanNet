@@ -37,7 +37,7 @@ GetCentrality <- function(method = method, net.list = NULL){
 
   cell.list <- list()
   for (cell.net in seq_along(net.list)){
-    LLS.net <- net.list[[cell.net]][,c('1','2','LLS')]
+    LLS.net <- net.list[[cell.net]][,c(1:3)]
     colnames(LLS.net) <- c('gene1', 'gene2', 'weight')
     net.graph <- graph_from_data_frame(LLS.net, directed=FALSE)
 
