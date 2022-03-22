@@ -214,7 +214,7 @@ p3 <- ggplot() + aes(tnet.ggi[["null.distribution"]])  +
   geom_histogram(binwidth=0.1, colour="black", fill="steelblue") +
   scale_x_continuous(trans='log10') +
   theme_minimal() +
-  ggtitle('Connectivity of 24 random genes in BC Tnet') +
+  ggtitle('GGI Connectivity in BC Tnet') +
   ylab('Occurence') + xlab('Number of links') +
   geom_vline(aes(xintercept=tnet.ggi[["observed"]]), colour="red", linetype="dashed")
 
