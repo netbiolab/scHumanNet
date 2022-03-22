@@ -227,7 +227,7 @@ p1+p2+p3
 
 
 
-![](images/bcsig_deconvolution.png)
+![](images/BCsig_analysis.jpg)
 
 
 
