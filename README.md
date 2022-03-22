@@ -216,7 +216,8 @@ p3 <- ggplot() + aes(tnet.ggi[["null.distribution"]])  +
   theme_minimal() +
   ggtitle('GGI Connectivity in BC Tnet') +
   ylab('Occurence') + xlab('Number of links') +
-  geom_vline(aes(xintercept=tnet.ggi[["observed"]]), colour="red", linetype="dashed")
+  geom_vline(aes(xintercept=tnet.ggi[["observed"]]), colour="red", linetype="dashed") +
+  geom_text(aes(tnet.ggi[["observed"]], 2000, label = paste0("Pvalue = \n",tnet.ggi[["p.value"]])))
 
 
 p1+p2+p3
