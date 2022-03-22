@@ -189,7 +189,7 @@ Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
   connectivity.final <- c(connectivity.random, connectivity)
   pvalue <- rank(-(connectivity.final),ties.method = 'last')[simulate.num + 1] / simulate.num
   #distribution
-  output.list <- list(null.distribution = connectivity.random, p.value = pvalue, detected.geneset = detected.genes)
+  output.list <- list(null.distribution = connectivity.random, p.value = pvalue, detected.geneset = detected.genes, observed = connectivity)
   
   return(output.list)
 }
