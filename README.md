@@ -201,9 +201,31 @@ p2 <- ggscatter(hnv3.connectivity.sig, x = "siggene_num_detected", y = "connecti
                 add.params = list(color='blue', fill = 'lightgray')) +
   stat_cor(method = "pearson", label.x = 200, label.y = 1000)
   
- 
- p2 + p1
+
 ```
+Finally with the `Connectivity()` user can assess whether their geneset's connectivity is statistically enriched compared to a random model. the random model is contructed via rejecion sampling where topological similar set of random nodes are slected and assessed for their connectivity. Here, we test the connectivity of geneset GGI97 in Breast Cancer Tcell, and show that it is statiscally significant
+
+``` r
+ggi.genes <- bc.sig.list[["GGI97"]]
+tnet.ggi <- Connectivity(network = sorted.net.list[["T_cell"]], geneset = ggi.genes, simulate.num = 10000)
+tnet.ggi[["p.value"]]
+
+p3 <- ggplot() + aes(tnet.ggi[["null.distribution"]])  +
+  geom_histogram(binwidth=0.1, colour="black", fill="steelblue") +
+  scale_x_continuous(trans='log10') +
+  theme_minimal() +
+  ggtitle('Connectivity of 24 random genes in BC Tnet') +
+  ylab('Occurence') + xlab('Number of links') +
+  geom_vline(aes(xintercept=tnet.ggi[["observed"]]), colour="red", linetype="dashed")
+
+
+p1+p2+p3
+
+```
+
+
+
+
 ![](images/bcsig_deconvolution.png)
 
 
