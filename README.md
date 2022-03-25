@@ -352,7 +352,7 @@ the celltype. To extract genes, use the `gene` column instead of
 `rownames()`.
 
 ``` r
-diffPR.sig <- FindDiffHub(diffPR.df, p.value = 0.05)
+diffPR.df.sig <- FindDiffHub(rank.df.final = rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta, net.list=sorted.net.list, q.method='BH', centrality="degree")
 diffPR.sig
 ```
 
