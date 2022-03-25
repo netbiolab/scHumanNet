@@ -45,9 +45,11 @@ GetCentrality <- function(method = method, net.list = NULL){
       genes.cent <- strength(net.graph)[order(strength(net.graph), decreasing = T)]
     }
     else if (method == 'betweenness'){
+      E(net.graph)$weight <- 1
       genes.cent <- betweenness(net.graph)[order(betweenness(net.graph), decreasing = T)]
     }
     else if (method == 'closeness'){
+      E(net.graph)$weight <- 1
       genes.cent <- closeness(net.graph)[order(closeness(net.graph), decreasing = T)]
     }
     else if (method == 'eigenvector'){
@@ -61,10 +63,12 @@ GetCentrality <- function(method = method, net.list = NULL){
     #remove ribo.genes
     genes.all <- V(net.graph)$name
     ribo.genes <-  genes.all[grep('^RPS[0-9]*|^RPL[0-9]*', genes.all)]
-    genes.cent.ribo.r <- genes.cent[!(names(genes.cent) %in% ribo.genes)]
+    mito.genes <- genes.all[grep('^MRPS[0-9]*|^MRPL[0-9]*', genes.all)]
+    bad.genes <- c(ribo.genes,mito.genes)
+    genes.cent.f <- genes.cent[!(names(genes.cent) %in% bad.genes)]
 
     #to normalize for network size, we use percentile rank
-    final.rank <- dplyr::percent_rank(genes.cent.ribo.r)
+    final.rank <- dplyr::percent_rank(genes.cent.f)
     cell.list[[cell.net]] <- final.rank
   }
   names(cell.list) <- names(net.list)
@@ -196,7 +200,7 @@ DiffPR <- function(rank.df.final = NULL,
   #check that all element of list contain same genes(all genes)
   df.final <- data.frame(matrix(nrow=length(rank.list[[1]]), ncol=2*length(rank.list)))
 
-  for (i in seq(1,8)){
+  for (i in seq(1,length(rank.list))){
     t <- 2*i - 1
     df.final[,t] <- names(rank.list[[i]])
     df.final[,t+1] <- rank.list[[i]]
@@ -222,55 +226,132 @@ DiffPR <- function(rank.df.final = NULL,
 #'
 #' @description Calcuate statistical signficance of diffPR values calculated with DiffPR()
 #'
-#' @param diffPR.df Output form diffPR()
-#' @param p.value Thresholded pvalue, e.g. 0.05 or 0.01
+#' @param rank.df.final Output from CombinePercRank
+#' @param meta metadata data.frame used for this analayiss
+#' @param celltypes column name where celltypes annotaiton are stored
+#' @param condition column name where disase and control annotaition is stored
+#' @param control character string that specific which value is the control
+#' @param net.list Output of SortAddLLS, network list to perfrom the analysis
+#' @param centrality the centrality method used in the getCentrality. both must match! this is used to find the null distribution
+#' @param q.method Method to perfrom multiple testing correction. accepted values are: c("BH","holm","hochberg","bonferroni","BY","fdr","none")
 #'
-#' @return Dataframe of celltypes and their centrality values
+#' @return Dataframe Percentile rank of centrality of each networks, their difference, and their statistical significance
 #' @export
 #'
 #' @examples
 #' sorted.net.list <- SortAddLLS(Celltype.specific.networks)
-#' strength.list <- GetCentrality(net.list = sorted.net.list)
+#' strength.list <- GetCentrality(net.list = sorted.net.list, method = 'degree')
 #' rank.df.final <- CombinePercRank(perc.rank.list = strength.list)
 #' diffPR.df <- DiffPR(rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta)
-#' diffPR.df.sig <- DiffPR(diffPR.df = diffPR.df, p.value = 0.05)
-FindDiffHub <- function(diffPR.df = NULL, p.value = NULL){
-  diffPR.df.list <- list()
-  for (i in seq(1,16,2)){
-    index <- (i+1) / 2
-    celltype <- colnames(diffPR.df)[i]
-    #make diffPR value with gene names
-    diffPR <- as.vector(diffPR.df[,i+1])
-    names(diffPR) <- diffPR.df[,i]
+#' diffPR.df.sig <- FindDiffHub(rank.df.final = rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta, net.list=sorted.net.list, q.method='BH', centrality="degree")
+FindDiffHub <- function(rank.df.final = NULL,
+                        celltypes = NULL ,
+                        condition = NULL,
+                        control = NULL,
+                        meta = NULL, 
+                        net.list = NULL,
+                        centrality = "degree",
+                        q.method = "BH"){
+  
+  final.df.list <- list()
+  for (celltype in names(table(meta[,celltypes]))){
+    #progress bar
+    print(paste0("Finding DiffHubs in ",celltype,"..."))
 
-    diffPR.nonzero <- diffPR[diffPR != 0]
-    rank <- seq(1,length(diffPR.nonzero),1)
-    pvalue <- rank / length(diffPR.nonzero) #non paramatric pvalue calculation
+    
+    
+    conditions <- as.character(unique(meta[,condition]))
+    control = conditions[conditions == control]
+    disease = conditions[conditions != control]
+    
+    #get diffPR.df of ctrl disase for each celltype
+    df <- rank.df.final[,c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'))]
+  
+    #get disease net
+    disease.net.name <- paste(disease, celltype,sep = '_')
+    disease.net <- igraph::graph_from_data_frame(net.list[[disease.net.name]], directed = F)
+    shuffled.weight1 <- sample(E(disease.net)$LLS) #rewire does not suporte weight..so we are going to shuffle both node and edges, while preserving topology
+    
+    #get control net
+    control.net.name <- paste(control, celltype,sep = '_')
+    control.net <- igraph::graph_from_data_frame(net.list[[control.net.name]], directed = F)
+    shuffled.weight2 <- sample(E(control.net)$LLS) #rewire does not suporte weight..so we are going to shuffle both node and edges, while preserving topology
+    
+    
+    #get df where at least one column has non-zero value. we don't need to evaluate diffPR zero..
+    df.f <- df[!(df[,1] ==0 & df[,2] == 0),]
+    #write.table(df.f, paste0('~/test/df_f_', celltype,'.tsv'), sep = '\t', quote = F, row.names = T, col.names = T)
+    
+    #its percentile rank...ASD-CTL lets higher value have higher centrality in ASD
+    df.f$gene <- rownames(df.f)
+    df.f$DiffPR <- df.f[,2] - df.f[,1]
+    
+    
+    #make this once for all gene comparision, we assume that null diffPR distribution is same for all genes
+    #to get significance of our diffPR value, we make n random diffPR and compare
+    null.distribution <- vector()
+    #make two random network and append diffPR values to null.distribution
+    while (length(null.distribution) < 1000000){
+      #random disease network
+      random.disease <- rewire(disease.net, with = each_edge(1, loops = F))
+      E(random.disease)$LLS <- shuffled.weight1
+      random.net.disease <- igraph::as_data_frame(random.disease)
+      random.cent.disease <- GetCentrality(method = centrality, net.list =list(disease.net.name = random.net.disease))
+      random.cent.disease <- as.data.frame(random.cent.disease[[1]])
+      random.cent.disease$gene <- rownames(random.cent.disease)
+      
+      #random control network
+      random.control <- rewire(disease.net, with = each_edge(1, loops = F))
+      E(random.control)$LLS <- shuffled.weight2
+      random.net.control <- igraph::as_data_frame(random.control)
+      random.cent.control <- GetCentrality(method = centrality, net.list =list(control.net.name = random.net.control))
+      random.cent.control <- as.data.frame(random.cent.control[[1]])
+      random.cent.control$gene <- rownames(random.cent.control)
+      
+      #bind two centrality
+      diffPR.random <- dplyr::full_join(random.cent.disease, random.cent.control, by='gene')
+      diffPR.random[is.na(diffPR.random)] <- 0 #replace NA with 0
+      diffPR.values <- as.numeric(diffPR.random[,1]) - as.numeric(diffPR.random[,3])
+      null.distribution <- c(null.distribution, diffPR.values)
+    }
 
-    diffPR.df.final <- cbind(names(diffPR.nonzero),diffPR.nonzero,pvalue, rep(celltype, length(diffPR.nonzero)))
 
-    #sort by diffPRvalue
-    diffPR.df.final <- diffPR.df.final[order(diffPR.df.final[,2]),]
+    # iterate over union set of genes and get pvalue
+    pb = txtProgressBar(min = 0, max = nrow(df.f), style = 3)
+    pvalue.all <- vector()
+    
+    #remove RPS RPL MRPS MRPL from union geneset of df.f to save time..these genes will be disregarded
+    genes.all <- df.f$gene
+    ribo.genes <-  genes.all[grep('^RPS[0-9]*|^RPL[0-9]*', genes.all)]
+    mito.genes <- genes.all[grep('^MRPS[0-9]*|^MRPL[0-9]*', genes.all)]
+    nduf.genes <- genes.all[grep('^NDUF', genes.all)]
+    bad.genes <- c(ribo.genes,mito.genes, nduf.genes)
+    
+    df.f.f <- df.f[!(df.f$gene %in% bad.genes),]
+    for (g in 1:nrow(df.f.f)){
+      Sys.sleep(0.05)
+      setTxtProgressBar(pb,g)
+      gene <- rownames(df.f)[g]
+      diffPR.gene <- df.f$DiffPR[g]
 
-    diffPR.df.list[[index]] <- diffPR.df.final
-
-    print(paste(celltype, 'network:', length(diffPR.nonzero), 'nodes'))
-
-    #calculate p-value based on absolute rank (we will consider up to 0.01)
-
+      #get pvalue, $frank is 10times faster
+      distribution.all <- c(null.distribution, diffPR.gene)
+      pvalue <- data.table::frank(-abs(distribution.all), ties.method = "min")[length(distribution.all)] / length(distribution.all) # ties are averaged..highly unlikely here
+      pvalue.all[g] <- pvalue
+    }
+    close(pb)
+    #make pvalue fo reach celltype
+    df.f.f$pvalue <- pvalue.all
+    df.f.f$qvalue <- p.adjust(df.f.f$pvalue, method = q.method, n = nrow(df.f.f))
+    df.f.f$celltype <- rep(celltype, nrow(df.f.f))
+  
   }
-  diffPR.df.result <- as.data.frame(do.call("rbind", diffPR.df.list))
-  colnames(diffPR.df.result) <- c('gene','diffPR','pvalue','celltype')
-
-  #change numeric values to numeric class
-  diffPR.df.result[c('diffPR','pvalue')] <- sapply(diffPR.df.result[c('diffPR','pvalue')], function(x){as.numeric(as.character(x))})
-
-  #get genes that have less then 0.01
-  pvalue <- p.value
-  diffPR.df.result.pvalue <- diffPR.df.result[diffPR.df.result$pvalue < pvalue,]
-
-  return(diffPR.df.result.pvalue)
+  
+  final.df.list[[celltype]] <- df.f
+  diffPR.df.result <- as.data.frame(do.call("rbind", final.df.list))
+  return(dffPR.df.result)
 }
+  
 
 
 
