@@ -258,8 +258,6 @@ FindDiffHub <- function(rank.df.final = NULL,
     #progress bar
     print(paste0("Finding DiffHubs in ",celltype,"..."))
 
-    
-    
     conditions <- as.character(unique(meta[,condition]))
     control = conditions[conditions == control]
     disease = conditions[conditions != control]
@@ -316,9 +314,6 @@ FindDiffHub <- function(rank.df.final = NULL,
     }
 
 
-    # iterate over union set of genes and get pvalue
-    pb = txtProgressBar(min = 0, max = nrow(df.f), style = 3)
-    pvalue.all <- vector()
     
     #remove RPS RPL MRPS MRPL from union geneset of df.f to save time..these genes will be disregarded
     genes.all <- df.f$gene
@@ -328,6 +323,10 @@ FindDiffHub <- function(rank.df.final = NULL,
     bad.genes <- c(ribo.genes,mito.genes, nduf.genes)
     
     df.f.f <- df.f[!(df.f$gene %in% bad.genes),]
+    
+    # iterate over union set of genes and get pvalue
+    pb = txtProgressBar(min = 0, max = nrow(df.f), style = 3)
+    pvalue.all <- vector()
     for (g in 1:nrow(df.f.f)){
       Sys.sleep(0.05)
       setTxtProgressBar(pb,g)
