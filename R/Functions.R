@@ -343,10 +343,10 @@ FindDiffHub <- function(rank.df.final = NULL,
     df.f.f$pvalue <- pvalue.all
     df.f.f$qvalue <- p.adjust(df.f.f$pvalue, method = q.method, n = nrow(df.f.f))
     df.f.f$celltype <- rep(celltype, nrow(df.f.f))
-  
+    
+    final.df.list[[celltype]] <- df.f.f
   }
   
-  final.df.list[[celltype]] <- df.f.f
   names(final.df.list) <- NULL
   diffPR.df.result <- as.data.frame(do.call("rbind", final.df.list))
   return(diffPR.df.result)
