@@ -347,6 +347,7 @@ FindDiffHub <- function(rank.df.final = NULL,
   }
   
   final.df.list[[celltype]] <- df.f.f
+  names(final.df.list) <- NULL
   diffPR.df.result <- as.data.frame(do.call("rbind", final.df.list))
   return(diffPR.df.result)
 }
