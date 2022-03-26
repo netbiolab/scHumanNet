@@ -19,7 +19,7 @@ single-cell RNA sequencing (scRNA-seq) data of any biological context
 (e.g., disease) and construct their own cell-type specific network for
 downstream analysis.
 
-![](images/scHumanNet_scheme.jpg)
+![](images/scHumanNet_scheme.png)
 
 For a given scRNA-seq data set, the SCINET framework utilize imputation,
 transformation, and normalization from the [ACTIONet package(Mohammadi
