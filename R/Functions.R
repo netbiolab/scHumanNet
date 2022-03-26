@@ -257,7 +257,8 @@ FindDiffHub <- function(rank.df.final = NULL,
   for (celltype in names(table(meta[,celltypes]))){
     #progress bar
     print(paste0("Finding DiffHubs in ",celltype,"..."))
-
+    
+    #get disease and control variables
     conditions <- as.character(unique(meta[,condition]))
     control = conditions[conditions == control]
     disease = conditions[conditions != control]
@@ -290,16 +291,17 @@ FindDiffHub <- function(rank.df.final = NULL,
     null.distribution <- vector()
     #make two random network and append diffPR values to null.distribution
     while (length(null.distribution) < 1000000){
+      # we make two random network from control..and find null diffPR values
       #random disease network
-      random.disease <- rewire(disease.net, with = each_edge(1, loops = F))
-      E(random.disease)$LLS <- shuffled.weight1
+      random.disease <- rewire(control.net, with = each_edge(1, loops = F))
+      E(random.disease)$LLS <- shuffled.weight2
       random.net.disease <- igraph::as_data_frame(random.disease)
       random.cent.disease <- GetCentrality(method = centrality, net.list =list(disease.net.name = random.net.disease))
       random.cent.disease <- as.data.frame(random.cent.disease[[1]])
       random.cent.disease$gene <- rownames(random.cent.disease)
       
       #random control network
-      random.control <- rewire(disease.net, with = each_edge(1, loops = F))
+      random.control <- rewire(control.net, with = each_edge(1, loops = F))
       E(random.control)$LLS <- shuffled.weight2
       random.net.control <- igraph::as_data_frame(random.control)
       random.cent.control <- GetCentrality(method = centrality, net.list =list(control.net.name = random.net.control))
@@ -313,25 +315,24 @@ FindDiffHub <- function(rank.df.final = NULL,
       null.distribution <- c(null.distribution, diffPR.values)
     }
 
-
     
     #remove RPS RPL MRPS MRPL from union geneset of df.f to save time..these genes will be disregarded
     genes.all <- df.f$gene
     ribo.genes <-  genes.all[grep('^RPS[0-9]*|^RPL[0-9]*', genes.all)]
     mito.genes <- genes.all[grep('^MRPS[0-9]*|^MRPL[0-9]*', genes.all)]
     nduf.genes <- genes.all[grep('^NDUF', genes.all)]
-    bad.genes <- c(ribo.genes,mito.genes, nduf.genes)
+    bad.genes <- c(ribo.genes, mito.genes, nduf.genes)
     
     df.f.f <- df.f[!(df.f$gene %in% bad.genes),]
-    
+
     # iterate over union set of genes and get pvalue
-    pb = txtProgressBar(min = 0, max = nrow(df.f), style = 3)
+    pb = txtProgressBar(min = 0, max = nrow(df.f.f), style = 3)
     pvalue.all <- vector()
     for (g in 1:nrow(df.f.f)){
       Sys.sleep(0.05)
       setTxtProgressBar(pb,g)
       gene <- rownames(df.f)[g]
-      diffPR.gene <- df.f$DiffPR[g]
+      diffPR.gene <- df.f.f$DiffPR[g]
 
       #get pvalue, $frank is 10times faster
       distribution.all <- c(null.distribution, diffPR.gene)
@@ -349,9 +350,8 @@ FindDiffHub <- function(rank.df.final = NULL,
   
   names(final.df.list) <- NULL
   diffPR.df.result <- as.data.frame(do.call("rbind", final.df.list))
-  return(diffPR.df.result)
+  return(dffPR.df.result)
 }
-  
 
 
 
