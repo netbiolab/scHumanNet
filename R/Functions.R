@@ -64,7 +64,8 @@ GetCentrality <- function(method = method, net.list = NULL){
     genes.all <- V(net.graph)$name
     ribo.genes <-  genes.all[grep('^RPS[0-9]*|^RPL[0-9]*', genes.all)]
     mito.genes <- genes.all[grep('^MRPS[0-9]*|^MRPL[0-9]*', genes.all)]
-    bad.genes <- c(ribo.genes,mito.genes)
+    nduf.genes <- genes.all[grep('^NDUF', genes.all)]
+    bad.genes <- c(ribo.genes, mito.genes, nduf.genes)
     genes.cent.f <- genes.cent[!(names(genes.cent) %in% bad.genes)]
 
     #to normalize for network size, we use percentile rank
