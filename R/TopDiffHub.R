@@ -41,7 +41,7 @@ TopDiffHub <- function(diffPR.df = NULL, top.percent = 0.05){
   colnames(diffPR.df.final) <- c('gene','diffPR','top_percentage','celltype')
   
   #change numeric values to numeric class
-  diffPR.df.final[c('diffPR','top.percentage')] <- sapply(diffPR.df.final[c('diffPR','top_percentage')], function(x){as.numeric(as.character(x))})
+  diffPR.df.final[c('diffPR','top_percentage')] <- sapply(diffPR.df.final[c('diffPR','top_percentage')], function(x){as.numeric(as.character(x))})
   
   #get genes that have less then 0.05
   threshold <- top.percent
