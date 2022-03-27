@@ -18,7 +18,7 @@ TopDiffHub <- function(diffPR.df = NULL, top.percent = 0.05){
     index <- (i+1) / 2
     celltype <- colnames(diffPR.df)[i]
     #make diffPR value with gene names
-    diffPR <- as.vector(diffPR.df[,i+1])
+    diffPR <- as.vector(diffPR.df[,(i+1)])
     names(diffPR) <- diffPR.df[,i]
 
     diffPR.nonzero <- diffPR[diffPR != 0]
