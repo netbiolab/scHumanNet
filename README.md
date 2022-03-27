@@ -344,7 +344,7 @@ head(diffPR.df)
 | …         | …                      | …   | …      | …                   |
 | ACAA1     | 0.9967987              | …   | NDUFB3 | -0.9946372          |
 
-Finally, we provide a nonparametric method to filter differential hubs
+Finally, we provide a two methods to prioritize gene. The first is the nonparametric method to filter differential hubs
 with the function `FindDiffHub()`. Input requires the output of DiffPR,
 and the user-defined pvalue threshold. The output consists of a gene
 column, diffPR value sorted from negative to positive value, pvalue, and
@@ -356,10 +356,32 @@ diffPR.df.sig <- FindDiffHub(rank.df.final = rank.df.final, celltypes = 'celltyp
 diffPR.sig
 ```
 
-|          | gene   | diffPR     | pvalue      | qvalue      | celltype  |
-|----------|--------|------------|-------------|-------------|-----------|
-| TRIM21   | TRIM21 | -0.8537161 | 0.04973245  |0.XXXXXXXX  | Astrocyte |
-| FOXH1    | FOXH1  | -0.8568620 | 0.04910293  |0.XXXXXXXX  | Astrocyte |
-| …        | …      | …          | …           | …          | …         |
-| COX16.1  | COX16  | 0.9793814  | 0.007617547 |0.XXXXXXXX  | Others    |
-| MAP2K1.1 | MAP2K1 | 0.9888977  | 0.003414762 |0.XXXXXXXX  | Others    |
+|          | Control_scHumanNet   | Disease_scHumanNet     | gene      | diffPR      | pvalue  | qvalue  | celltype  |
+|----------|--------|------------|-------------|-------------|-----------| -----------|-----------|
+| ALDH1L1   |  0.9992135 | 1.0000000 |ALDH1L1  |0.0007864727  | 9.982880e-01 | 0.999598937 | Astrocyte
+| SLC27A1   | 0.9980338  | 0.9995997 | SLC27A1  |0.0015658614  | 9.971936e-01 | 0.999598937 | Astrocyte
+| …        | …      | …          | …           | …          | …         |  …         |  …         |
+| C12orf71  | 0.0012836970  | 0  | C12orf71  |-0.0012836970    | 0.9972975 |  0.9996602 |  Others
+| ZNF222 | 0.0009627728 | 0  | ZNF222 | -0.0009627728    | 0.9981590 | 0.9996602 | Others
+
+
+The second, less stringent method is to extract top n percent of diffPR genes with the function `TopDiffHub()`. Input requires the output of DiffPR,
+and the user-defined top_percentage threshold (default 0.05). The output consists of a gene
+column, diffPR value sorted from negative to positive value, the top percengate value, and
+the celltype. To extract genes, use the `gene` column instead of
+`rownames()`.
+
+``` r
+diffPR.df.top <- FindDiffHub(diffPR.df, top.percent = 0.05)
+diffPR.df.top
+```
+
+|          | gene   | diffPR     | top_percentage | celltype  |
+|----------|--------|------------|-------------|-------------|
+| TRIM21   | TRIM21 | -0.8537161 | 0.04973245  | Astrocyte |
+| FOXH1    | FOXH1  | -0.8568620 | 0.04910293  | Astrocyte |
+| …        | …      | …          | …           | …         |
+| COX16.1  | COX16  | 0.9793814  | 0.007617547 | Others    |
+| MAP2K1.1 | MAP2K1 | 0.9888977  | 0.003414762 | Others    |
+
+
