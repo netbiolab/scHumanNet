@@ -266,7 +266,7 @@ FindDiffHub <- function(rank.df.final = NULL,
     
     #get diffPR.df of ctrl disase for each celltype
     df <- rank.df.final[,c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'))]
-  
+    
     #get disease net
     disease.net.name <- paste(disease, celltype,sep = '_')
     disease.net <- igraph::graph_from_data_frame(net.list[[disease.net.name]], directed = F)
@@ -315,7 +315,7 @@ FindDiffHub <- function(rank.df.final = NULL,
       diffPR.values <- as.numeric(diffPR.random[,1]) - as.numeric(diffPR.random[,3])
       null.distribution <- c(null.distribution, diffPR.values)
     }
-
+    
     
     #remove RPS RPL MRPS MRPL from union geneset of df.f to save time..these genes will be disregarded
     genes.all <- df.f$gene
@@ -325,7 +325,7 @@ FindDiffHub <- function(rank.df.final = NULL,
     bad.genes <- c(ribo.genes, mito.genes, nduf.genes)
     
     df.f.f <- df.f[!(df.f$gene %in% bad.genes),]
-
+    
     # iterate over union set of genes and get pvalue
     pb = txtProgressBar(min = 0, max = nrow(df.f.f), style = 3)
     pvalue.all <- vector()
@@ -334,7 +334,7 @@ FindDiffHub <- function(rank.df.final = NULL,
       setTxtProgressBar(pb,g)
       gene <- rownames(df.f)[g]
       diffPR.gene <- df.f.f$DiffPR[g]
-
+      
       #get pvalue, $frank is 10times faster
       distribution.all <- c(null.distribution, diffPR.gene)
       pvalue <- data.table::frank(-abs(distribution.all), ties.method = "min")[length(distribution.all)] / length(distribution.all) # ties are averaged..highly unlikely here
@@ -345,14 +345,15 @@ FindDiffHub <- function(rank.df.final = NULL,
     df.f.f$pvalue <- pvalue.all
     df.f.f$qvalue <- p.adjust(df.f.f$pvalue, method = q.method, n = nrow(df.f.f))
     df.f.f$celltype <- rep(celltype, nrow(df.f.f))
+    colnames(df.f.f) <- c("Control_scHumanNet", "Disease_scHumanNet", "gene", "diffPR", "pvalue", "qvalue", "celltype")
     
     final.df.list[[celltype]] <- df.f.f
   }
   
-  names(final.df.list) <- NULL
-  diffPR.df.result <- as.data.frame(do.call("rbind", final.df.list))
+  names(final.df.list2) <- NULL
+  diffPR.df.result <- do.call("rbind", final.df.list2)
+  
   return(dffPR.df.result)
 }
-
 
 
