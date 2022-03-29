@@ -18,7 +18,7 @@ dataframe of top percentage diffPR genes for each celltype
 Title Get top percent of diffHubs default is 5percent
 }
 \examples{
- sorted.net.list <- SortAddLLS(Celltype.specific.networks)
+sorted.net.list <- SortAddLLS(Celltype.specific.networks)
 strength.list <- GetCentrality(net.list = sorted.net.list, method = 'degree')
 rank.df.final <- CombinePercRank(perc.rank.list = strength.list)
 top.diffPR.df <- TopDiffHub(rank.df.final)

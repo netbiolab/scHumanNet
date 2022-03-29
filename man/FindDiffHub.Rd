@@ -4,23 +4,44 @@
 \alias{FindDiffHub}
 \title{FindDiffHub}
 \usage{
-FindDiffHub(diffPR.df = NULL, p.value = NULL)
+FindDiffHub(
+  rank.df.final = NULL,
+  celltypes = NULL,
+  condition = NULL,
+  control = NULL,
+  meta = NULL,
+  net.list = NULL,
+  centrality = "degree",
+  q.method = "BH"
+)
 }
 \arguments{
-\item{diffPR.df}{Output form diffPR()}
+\item{rank.df.final}{Output from CombinePercRank}
 
-\item{p.value}{Thresholded pvalue, e.g. 0.05 or 0.01}
+\item{celltypes}{column name where celltypes annotaiton are stored}
+
+\item{condition}{column name where disase and control annotaition is stored}
+
+\item{control}{character string that specific which value is the control}
+
+\item{meta}{metadata data.frame used for this analayiss}
+
+\item{net.list}{Output of SortAddLLS, network list to perfrom the analysis}
+
+\item{centrality}{the centrality method used in the getCentrality. both must match! this is used to find the null distribution}
+
+\item{q.method}{Method to perfrom multiple testing correction. accepted values are: c("BH","holm","hochberg","bonferroni","BY","fdr","none")}
 }
 \value{
-Dataframe of celltypes and their centrality values
+Dataframe Percentile rank of centrality of each networks, their difference, and their statistical significance
 }
 \description{
 Calcuate statistical signficance of diffPR values calculated with DiffPR()
 }
 \examples{
 sorted.net.list <- SortAddLLS(Celltype.specific.networks)
-strength.list <- GetCentrality(net.list = sorted.net.list)
+strength.list <- GetCentrality(net.list = sorted.net.list, method = 'degree')
 rank.df.final <- CombinePercRank(perc.rank.list = strength.list)
 diffPR.df <- DiffPR(rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta)
-diffPR.df.sig <- DiffPR(diffPR.df = diffPR.df, p.value = 0.05)
+diffPR.df.sig <- FindDiffHub(rank.df.final = rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta, net.list=sorted.net.list, q.method='BH', centrality="degree")
 }
