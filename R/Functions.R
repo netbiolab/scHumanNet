@@ -319,7 +319,6 @@ FindDiffHub <- function(rank.df.final = NULL,
       null.distribution <- c(null.distribution, diffPR.values)
     }
     
-    hist(null.distribution, col='grey')
     
     #remove RPS RPL MRPS MRPL from union geneset of df.f to save time..these genes will be disregarded
     genes.all <- df.f$gene
