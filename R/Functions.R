@@ -255,6 +255,7 @@ FindDiffHub <- function(rank.df.final = NULL,
                         q.method = "BH"){
   
   final.df.list <- list()
+  
   for (celltype in names(table(meta[,celltypes]))){
     #progress bar
     print(paste0("Finding DiffHubs in ",celltype,"..."))
@@ -295,7 +296,7 @@ FindDiffHub <- function(rank.df.final = NULL,
       # we make two random network from control..and find null diffPR values
       
       #random control network 1
-      random.control1 <- rewire(control.net, with = each_edge(0.7, loops = F))
+      random.control1 <- rewire(control.net, with = each_edge(0.9, loops = F))
       #random.disease <- rewire(control.net, with = keeping_degseq(niter = vcount(control.net * 50)))
       E(random.control1)$LLS <- shuffled.weight2
       random.net.control1 <- igraph::as_data_frame(random.control1)
@@ -304,7 +305,7 @@ FindDiffHub <- function(rank.df.final = NULL,
       random.cent.control1$gene <- rownames(random.cent.control1)
       
       #random control network
-      random.control2 <- rewire(control.net, with = each_edge(0.7, loops = F))
+      random.control2 <- rewire(control.net, with = each_edge(0.9, loops = F))
       #random.control <- rewire(control.net, with = keeping_degseq(niter = vcount(control.net * 50)))
       E(random.control2)$LLS <- shuffled.weight2
       random.net.control2 <- igraph::as_data_frame(random.control2)
@@ -319,6 +320,7 @@ FindDiffHub <- function(rank.df.final = NULL,
       null.distribution <- c(null.distribution, diffPR.values)
     }
     
+    #hist(null.distribution, col='grey')
     
     #remove RPS RPL MRPS MRPL from union geneset of df.f to save time..these genes will be disregarded
     genes.all <- df.f$gene
@@ -358,6 +360,7 @@ FindDiffHub <- function(rank.df.final = NULL,
   
   return(diffPR.df.result)
 }
+
 
 
 
