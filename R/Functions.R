@@ -267,7 +267,7 @@ FindDiffHub <- function(rank.df.final = NULL,
     #get diffPR.df of ctrl disase for each celltype
     df <- rank.df.final[,c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'))]
     
-    #get disease net
+    #get disease net # this is not needed in the null distribution generation
     disease.net.name <- paste(disease, celltype,sep = '_')
     disease.net <- igraph::graph_from_data_frame(net.list[[disease.net.name]], directed = F)
     shuffled.weight1 <- sample(E(disease.net)$LLS) #rewire does not suporte weight..so we are going to shuffle both node and edges, while preserving topology
@@ -293,29 +293,33 @@ FindDiffHub <- function(rank.df.final = NULL,
     #make two random network and append diffPR values to null.distribution
     while (length(null.distribution) < 1000000){
       # we make two random network from control..and find null diffPR values
-      #random disease network
-      random.disease <- rewire(control.net, with = each_edge(1, loops = F))
-      E(random.disease)$LLS <- shuffled.weight2
-      random.net.disease <- igraph::as_data_frame(random.disease)
-      random.cent.disease <- GetCentrality(method = centrality, net.list =list(disease.net.name = random.net.disease))
-      random.cent.disease <- as.data.frame(random.cent.disease[[1]])
-      random.cent.disease$gene <- rownames(random.cent.disease)
+      
+      #random control network 1
+      random.control1 <- rewire(control.net, with = each_edge(0.7, loops = F))
+      #random.disease <- rewire(control.net, with = keeping_degseq(niter = vcount(control.net * 50)))
+      E(random.control1)$LLS <- shuffled.weight2
+      random.net.control1 <- igraph::as_data_frame(random.control1)
+      random.cent.control1 <- GetCentrality(method = centrality, net.list =list(disease.net.name = random.net.control1))
+      random.cent.control1 <- as.data.frame(random.cent.control1[[1]])
+      random.cent.control1$gene <- rownames(random.cent.control1)
       
       #random control network
-      random.control <- rewire(control.net, with = each_edge(1, loops = F))
-      E(random.control)$LLS <- shuffled.weight2
-      random.net.control <- igraph::as_data_frame(random.control)
-      random.cent.control <- GetCentrality(method = centrality, net.list =list(control.net.name = random.net.control))
-      random.cent.control <- as.data.frame(random.cent.control[[1]])
-      random.cent.control$gene <- rownames(random.cent.control)
+      random.control2 <- rewire(control.net, with = each_edge(0.7, loops = F))
+      #random.control <- rewire(control.net, with = keeping_degseq(niter = vcount(control.net * 50)))
+      E(random.control2)$LLS <- shuffled.weight2
+      random.net.control2 <- igraph::as_data_frame(random.control2)
+      random.cent.control2 <- GetCentrality(method = centrality, net.list =list(control.net.name = random.net.control2))
+      random.cent.control2 <- as.data.frame(random.cent.control2[[1]])
+      random.cent.control2$gene <- rownames(random.cent.control2)
       
       #bind two centrality
-      diffPR.random <- dplyr::full_join(random.cent.disease, random.cent.control, by='gene')
+      diffPR.random <- dplyr::full_join(random.cent.control1, random.cent.control2, by='gene')
       diffPR.random[is.na(diffPR.random)] <- 0 #replace NA with 0
       diffPR.values <- as.numeric(diffPR.random[,1]) - as.numeric(diffPR.random[,3])
       null.distribution <- c(null.distribution, diffPR.values)
     }
     
+    hist(null.distribution, col='grey')
     
     #remove RPS RPL MRPS MRPL from union geneset of df.f to save time..these genes will be disregarded
     genes.all <- df.f$gene
@@ -353,7 +357,8 @@ FindDiffHub <- function(rank.df.final = NULL,
   names(final.df.list) <- NULL
   diffPR.df.result <- do.call("rbind", final.df.list)
   
-  return(dffPR.df.result)
+  return(diffPR.df.result)
 }
+
 
 
