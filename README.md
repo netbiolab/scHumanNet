@@ -39,7 +39,7 @@ a cellular level.
 ### Setting up the Environment
 
 For running scHumanNet, we recommend a `conda` envrionment to install
-packages in the `packages` folder
+packages in the `packages` folder.
 
 ``` bash
 $ conda create -n scHumanNet R==4.0
@@ -48,13 +48,13 @@ $ conda activate scHumanNet
 (scHumanNet) $ conda install --file ./scHumanNet/packages/requirements_scHumanNet.txt
 ```
 
-install the modified version of ACTIONet
+Install the modified version of ACTIONet.
 
 ``` bash
 (scHumanNet) $ R CMD INSTALL ./scHumanNet/packages/ACTIONet_2.0.18_HNv3
 ```
 
-start R and install SCINET and scHumanNet
+Start R and install SCINET and scHumanNet.
 
 ``` r
 devtools::install_github("shmohammadi86/SCINET")
@@ -83,16 +83,15 @@ using publically accessivble pan-cancer dataset from [Qian et al. Cell
 Research
 2020](https://www-nature-com.ezp-prod1.hul.harvard.edu/articles/s41422-020-0355-0).
 The 10X count folder and the metadata can be downloaded from
-<http://blueprint.lambrechtslab.org>
+<http://blueprint.lambrechtslab.org>.
 
 ``` r
 counts <- Read10X('/your/path/to/BC_counts/')
 meta <- read.table('/your/path/to/BC_metadata.csv', header = T, sep = ',')
 ```
-
-Convert to sce  
+### Create sce object
 This tutorial converts count data and metadata to sce obeject from
-`SingleCellExperiment`, to be used as intput for network construction
+`SingleCellExperiment`, to be used as intput for network construction.
 
 ``` r
 data <- SingleCellExperiment(assays = list(logcounts = counts), colData = meta)
@@ -107,21 +106,21 @@ data <- SingleCellExperiment(assays = list(logcounts = seurat_object@assays$RNA@
 data <- Seurat::as.SingleCellExperiment(seurat.object)
 ```
 
-prior to scHumanNet construction, reduce data and use the ace class from
-the ACTIONet package
+Prior to scHumanNet construction, reduce data and use the ace class from
+the ACTIONet package.
 
 ``` r
 ace <- reduce.ace(data)
 ```
 
 The column `CellType` of the metadata here indicates the column where
-each barcode is annotated from the user’s preferred choice of methods
+each barcode is annotated from the user’s preferred choice of methods.
 
 ``` r
 ace[['Labels']] <- meta$CellType
 ```
 
-Load HumanNetv3 interactome and retrieve cell-type specific interactions. Command `data('HNv3_XC_LLS')` loads the interactome as an igraph object named `graph.hn3`
+Load HumanNetv3 interactome and retrieve cell-type specific interactions. Command `data('HNv3_XC_LLS')` loads the interactome as an igraph object named `graph.hn3`.
 ``` r
 data('HNv3_XC_LLS')
 ace <- compute.cluster.feature.specificity(ace, ace$Labels, "celltype_specificity_scores")
@@ -129,13 +128,13 @@ Celltype.specific.networks = run.SCINET.clusters(ace, specificity.slot.name = "c
 ```
 
 Sort each genepair alphabetically and add LLS weight from HumanNetv3.
-Elements of `sorted.net.list` are stored as edgelist. This is later useful for assessing edge overlap between scHumanNets
+Elements of `sorted.net.list` are stored as edgelist. This is later useful for assessing edge overlap between scHumanNets.
 
 ``` r
 sorted.net.list <- SortAddLLS(Celltype.specific.networks, reference.network = graph.hn3)
 ```
 
-Check each element of list and save scHumanNets, with both SCINET and LLS weights included in the edgelist for downstream analysis. R code used to analyze pan-cancer scHumanNet is included in the `figures` folder
+Check each element of list and save scHumanNets, with both SCINET and LLS weights included in the edgelist for downstream analysis. R code used to analyze pan-cancer scHumanNet is included in the `figures` folder.
 
 ``` r
 lapply(sorted.net.list, head)
@@ -145,7 +144,7 @@ saveRDS(sorted.net.list, './sorted_el_list.rds')
 ## Network Connectivity Deconvolution with user input geneset
 With scHumanNet we also provide a computaitonal framework to statistically asssess the connectivty of a given geneset at the cellular level of scHumanNets. In this example we use the Immune Checkpoint molecules(ICMs) as a geneset to assess in what celltypes these genesets have strong co-functional characteristic. In common cases user may use a DEG derived genesets or bulk sample derived signatures genes to find whether the genesets' cofunctionality is supported constructed scHumanNet models. 
 
-The output of `Connectivity()` is a list with three elements: 1. the null distribution vector of selected random gene's connectivity. 2. non-parametric pvalue of the user-input geneset. 3. geneset vector that was detected in the input scHumanNet
+The output of `Connectivity()` is a list with three elements: 1. the null distribution vector of selected random gene's connectivity. 2. non-parametric pvalue of the user-input geneset. 3. geneset vector that was detected in the input scHumanNet.
 
 ``` r
 data("ICMs")
@@ -153,13 +152,13 @@ icm.connectivity <- DeconvoluteNet(network = sorted.net.list, geneset = icm.gene
 icm.connectivity.tcell <- Connectivity(network = sorted.net.list[["T_cell"]], geneset = icm.genes, simulate.num = 10000)
 
 #we can also perform a conncectivity test for all scHumanNets. this will take some time...
-icm.connectivity.nulltest.list <- lapply(sorted.net.list, function(net){Connectivity(network = net, geneset = icm.genes, simulated.num=10000))
+icm.connectivity.nulltest.list <- lapply(sorted.net.list, function(net){Connectivity(network = net, geneset = icm.genes, simulate.num=10000)})
 ```
 
 ## Using multiple user genesets for comparison
 Of note, we can also compare the functional connectivity of multiple genesets. In this case, the geneset is provided as a named list for parameter geneset of `DeconvoluteNet()`. In this case the output dataframe contains column Connectivity number normlalized for the length of detected signatures. It is often informative to find which geneset have the most co-functional properties by utilizing scatter plots. Here we show that in the breast cancer signature genesets, signature GGI97, Robust, Tcell have most connectivity. In practice, this function can be potentially used to deconvolute previously identified genesets and analyze the cellular context of co-functionality of user's scRNA seq dataset.
 
-it is often times useful to see which geneset has most co-functionality. We show in the example here that geneset GGI97, Robust, Tcell is the most cofunctional geneset when assessed for their connectivty in the entire HumanNetv3 interactiome compared to the numeber of geneset. For detailed use of the reference interactome, please refer to [the HumanNetv3 Web Server](https://www.inetbio.org/humannet/)
+It is often times useful to see which geneset has most co-functionality. We show in the example here that geneset GGI97, Robust, Tcell is the most cofunctional geneset when assessed for their connectivty in the entire HumanNetv3 interactiome compared to the numeber of geneset. For detailed use of the reference interactome, please refer to [the HumanNetv3 Web Server](https://www.inetbio.org/humannet/).
 
 ``` r
 library(ggpubr)
@@ -203,7 +202,7 @@ p2 <- ggscatter(hnv3.connectivity.sig, x = "siggene_num_detected", y = "connecti
   
 
 ```
-Finally with the `Connectivity()` user can assess whether their geneset's connectivity is statistically enriched compared to a random model. the random model is contructed via rejecion sampling where topological similar set of random nodes are slected and assessed for their connectivity. Here, we test the connectivity of geneset GGI97 in Breast Cancer Tcell, and show that it is statiscally significant
+Finally with the `Connectivity()` user can assess whether their geneset's connectivity is statistically enriched compared to a random model. the random model is contructed via rejecion sampling where topological similar set of random nodes are slected and assessed for their connectivity. Here, we test the connectivity of geneset GGI97 in Breast Cancer Tcell, and show that it is statiscally significant.
 
 ``` r
 ggi.genes <- bc.sig.list[["GGI97"]]
@@ -236,8 +235,8 @@ p1+p2+p3
 
 In this example we provide a framework for a common downstream network
 analysis, identification of differential hub in a control vs disease
-scRNA-seq study. Here we present an example cell-type specific gene
-prioritization assocated with ASD. Differential hub gene is identified
+scRNA-seq study. Here we present an example cell-type-specific gene
+prioritization associated with ASD. Differential hub gene is identified
 that significantly differs in centrality for each neuronal celltypes of
 healthy vs ASD scHumanNet(data derived from [Velmeshev et al. Science
 2019](https://pubmed.ncbi.nlm.nih.gov/31097668/)).
@@ -245,7 +244,7 @@ healthy vs ASD scHumanNet(data derived from [Velmeshev et al. Science
 ![](images/scHumanNet_diff.png)
 
 Download the publically accessible data `meta.txt` and `10X folder` from
-<https://autism.cells.ucsc.edu>
+<https://autism.cells.ucsc.edu>.
 
 ``` r
 counts <- Seurat::Read10X('/your/path/to/10X_out/')
@@ -275,7 +274,7 @@ meta$celltype_condition <- paste(meta$diagnosis, meta$celltypes_merged, sep = '_
 ```
 
 Construct celltype specific networks for control and disease similarly
-as above
+as above.
 
 ``` r
 data <- SingleCellExperiment(assays = list(logcounts = counts), colData = meta)
@@ -285,7 +284,7 @@ ace = compute.cluster.feature.specificity(ace, ace$Labels, "celltype_specificity
 Celltype.specific.networks = run.SCINET.clusters(ace, specificity.slot.name = "celltype_specificity_scores_feature_specificity")
 ```
 
-Add LLS weight from HumanNetv3 for downstream analysis
+Add LLS weight from HumanNetv3 for downstream analysis.
 
 ``` r
 data('HNv3_XC_LLS')
@@ -316,12 +315,12 @@ top.df <- TopHub(rank.df.final, top.n = 50)
 head(top.df)
 ```
 
-| Control\_Excitatory | ASD\_Excitatory | …   | ASD\_Others |
-|---------------------|-----------------|-----|-------------|
-| ULK1                | ULK1            | …   | UQCRC1      |
-| MTFMT               | GRIN2B          | …   | NDUFA8      |
-| …                   | …               | …   | …           |
-| COX4I1              | RPE             | …   | NDUFA3      |
+| ASD\_Astrocyte  | ASD\_Endothelial | …   | Control\_Others |
+|-----------------|------------------|-----|-----------------|
+| ALDH1L1         | CD4              | …   | COX4I1          |
+| SLC27A1         | STAT1            | …   | UQCRC1          |
+| …                   | …                | …   | …               |
+| PAX6            | CD14             | …   | COX6B1          |
 
 Get the differential percentile rank value for each genes with function
 `DiffPR()`, where the output is a dataframe with genes and the
@@ -339,10 +338,10 @@ head(diffPR.df)
 
 | Astrocyte | Astrocyte\_ASD-Control | …   | Others | Others\_ASD-Control |
 |-----------|------------------------|-----|--------|---------------------|
-| AR        | -1.0000000             | …   | UQCRC2 | -0.9987382          |
-| FASN      | -0.9996068             | …   | NDUFB8 | -0.9981073          |
+| AR        | -1.0000000             | …   | UQCRC2 | -0.9993515          |
+| FASN      | -0.9996066             | …   | TFAM   | -0.9990272          |
 | …         | …                      | …   | …      | …                   |
-| ACAA1     | 0.9967987              | …   | NDUFB3 | -0.9946372          |
+| ACAA1     | 0.9967962              | …   | BCS1L  | -0.9951362          |
 
 Finally, we provide a two methods to prioritize gene. The first is the nonparametric method to filter differential hubs
 with the function `FindDiffHub()`. Input requires the output of DiffPR,
@@ -353,7 +352,7 @@ the celltype. To extract genes, use the `gene` column instead of
 
 ``` r
 diffPR.df.sig <- FindDiffHub(rank.df.final = rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta, net.list=sorted.net.list, q.method='BH', centrality="degree")
-diffPR.sig
+diffPR.df.sig
 ```
 
 |          | Control_scHumanNet   | Disease_scHumanNet     | gene      | diffPR      | pvalue  | qvalue  | celltype  |
