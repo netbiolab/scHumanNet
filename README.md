@@ -371,7 +371,7 @@ the celltype. To extract genes, use the `gene` column instead of
 `rownames()`.
 
 ``` r
-diffPR.df.top <- FindDiffHub(diffPR.df, top.percent = 0.05)
+diffPR.df.top <- TopDiffHub(diffPR.df, top.percent = 0.05)
 diffPR.df.top
 ```
 
