@@ -107,7 +107,7 @@ data <- Seurat::as.SingleCellExperiment(seurat.object)
 ```
 
 Prior to scHumanNet construction, reduce data and use the ace class from
-the ACTIONet package. `run.ACTIONet()` is an optional, this function performs matrix transformation via revese-rank normalization and imputation. For more information, refer to [Mohammadi et al. Nat Communication](https://www.nature.com/articles/s41467-020-18416-6)
+the ACTIONet package. `run.ACTIONet()` is optional, this wrapper function performs matrix transformation via revese-rank normalization and imputation. For more information, refer to [Mohammadi et al. Nat Communication](https://www.nature.com/articles/s41467-020-18416-6)
 
 ``` r
 ace <- reduce.ace(data)
