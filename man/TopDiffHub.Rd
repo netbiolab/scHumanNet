@@ -7,7 +7,7 @@
 TopDiffHub(diffPR.df = NULL, top.percent = 0.05)
 }
 \arguments{
-\item{diffPR.df}{output dataframe of CombinePercRank,}
+\item{diffPR.df}{output dataframe of diffPR(),}
 
 \item{top.percent}{top percentage of diffPR hub genes to retrieve, default is 0.05}
 }
@@ -21,5 +21,6 @@ Title Get top percent of diffHubs default is 5percent
 sorted.net.list <- SortAddLLS(Celltype.specific.networks)
 strength.list <- GetCentrality(net.list = sorted.net.list, method = 'degree')
 rank.df.final <- CombinePercRank(perc.rank.list = strength.list)
-top.diffPR.df <- TopDiffHub(rank.df.final)
+diffPR.df <- DiffPR(rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta)
+top.diffPR.df <- TopDiffHub(diffPR.df)
 }
