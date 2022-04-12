@@ -143,6 +143,23 @@ lapply(sorted.net.list, head)
 saveRDS(sorted.net.list, './sorted_el_list.rds')
 ```
 
+scHumanNet package provides a statistical framework to threshold functional hub genes from each cell-type specific networks via `FindAllHub()`. Briefly, it creates a null model of ranom networks by swapping edges with equal probability, thus creating a distribution of centralty values. Each hub's centrality is measures against this null distribution and a p-value is calculated. Default correction method is Benjamini-Hochberg method and the default threshold cut value is qvalue 0.05. To filter for genes, use the `gene` column and not the rownames.
+
+``` r
+sig.hub.df <- FindAllHub(sorted.net.list, centrality="degree")
+sig.hub.df
+```
+
+
+| Centrality  | gene | pvalue   | qvalue | celltype |
+|-------------|------|----------|--------|----------|
+| 1                 | CD19            |  0.0000891981090000892   | 0.00428745577260429   | B_cell |
+| 0.9995374         | CD40            |  0.0000891981090000892   |0.00428745577260429    | B_cell |
+| …                 | …               | …                        | ...                   | ...    |
+| 0.9635941         | TRAF3           | 0.00172331258975586      | 0.0463678793681187 | T_cell    |
+| 0.963206816421379 | LAT             | 0.00172331258975586      | 0.0463678793681187 | T_cell    |
+
+
 ## Network Connectivity Deconvolution with user input geneset
 With scHumanNet we also provide a computaitonal framework to statistically asssess the connectivty of a given geneset at the cellular level of scHumanNets. In this example we use the Immune Checkpoint molecules(ICMs) as a geneset to assess in what celltypes these genesets have strong co-functional characteristic. In common cases user may use a DEG derived genesets or bulk sample derived signatures genes to find whether the genesets' cofunctionality is supported constructed scHumanNet models. 
 
