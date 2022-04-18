@@ -111,8 +111,7 @@ the ACTIONet package. `run.ACTIONet()` is optional, this wrapper function perfor
 
 ``` r
 ace <- reduce.ace(data)
-#ACTIONet_results = run.ACTIONet(ace = ace, thread_no = 8)
-#ace <- ACTIONet_results$ace
+#ace = run.ACTIONet(ace = ace, thread_no = 8)
 ```
 
 The column `CellType` of the metadata here indicates the column where
