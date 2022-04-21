@@ -165,7 +165,7 @@ With scHumanNet we also provide a computaitonal framework to statistically assse
 The output of `Connectivity()` is a list with three elements: 1. the null distribution vector of selected random gene's connectivity. 2. non-parametric pvalue of the user-input geneset. 3. geneset vector that was detected in the input scHumanNet.
 
 ``` r
-data("ICMs")
+data("ICMs_auslander")
 icm.connectivity <- DeconvoluteNet(network = sorted.net.list, geneset = icm.genes)
 icm.connectivity.tcell <- Connectivity(network = sorted.net.list[["T_cell"]], geneset = icm.genes, simulate.num = 10000)
 
