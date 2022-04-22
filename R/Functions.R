@@ -258,6 +258,9 @@ FindDiffHub <- function(rank.df.final = NULL,
                         centrality = "degree",
                         q.method = "BH"){
   
+  #set 1 core for data.table frank
+  data.table::setDTthreads(threads = 1)
+  
   final.df.list <- list()
   
   for (celltype in names(table(meta[,celltypes]))){
