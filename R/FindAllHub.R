@@ -16,7 +16,10 @@ FindAllHub <- function(net.list = NULL,
                         centrality = "degree",
                         q.method = "BH",
                         threshold = 0.05){
-
+  
+  #set 1 core for data.table frank
+  data.table::setDTthreads(threads = 1)
+  
   # run this for all celltypes in the net.list
   final.df.list <- list()
   centrality.list <- GetCentrality(net.list, method='degree')
