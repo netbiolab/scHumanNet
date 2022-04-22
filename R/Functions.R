@@ -179,6 +179,10 @@ DiffPR <- function(rank.df.final = NULL,
                    condition = NULL,
                    control = NULL,
                    meta = NULL){
+  
+  #convert all factor column to character
+  i <- sapply(meta, is.factor)
+  meta[i] <- lapply(meta[i], as.character)
 
   rank.list <- list()
 
@@ -260,6 +264,10 @@ FindDiffHub <- function(rank.df.final = NULL,
   
   #set 1 core for data.table frank
   data.table::setDTthreads(threads = 1)
+  
+  #convert all factor column to character
+  i <- sapply(meta, is.factor)
+  meta[i] <- lapply(meta[i], as.character)
   
   final.df.list <- list()
   
