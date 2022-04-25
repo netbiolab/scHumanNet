@@ -287,12 +287,12 @@ FindDiffHub <- function(rank.df.final = NULL,
     df <- rank.df.final[,colnames.in]
     
     #get disease net # this is not needed in the null distribution generation
-    disease.net.name <- paste(disease, celltype,sep = '_')
+    disease.net.name <- colnames.in[grep(disease, colnames.in)]
     disease.net <- igraph::graph_from_data_frame(net.list[[disease.net.name]], directed = F)
     shuffled.weight1 <- sample(E(disease.net)$LLS) #rewire does not suporte weight..so we are going to shuffle both node and edges, while preserving topology
     
     #get control net
-    control.net.name <- paste(control, celltype,sep = '_')
+    control.net.name <- colnames.in[grep(control, colnames.in)]
     control.net <- igraph::graph_from_data_frame(net.list[[control.net.name]], directed = F)
     shuffled.weight2 <- sample(E(control.net)$LLS) #rewire does not suporte weight..so we are going to shuffle both node and edges, while preserving topology
     
