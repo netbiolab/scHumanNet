@@ -195,7 +195,8 @@ DiffPR <- function(rank.df.final = NULL,
     #subset brain percentile rank
     #either celltype_condition or condition_celltype
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
-    df <- rank.df.final[,colnames(rank.df.final) %in% celltype_condition_cols]
+    colnames.in <- colnames(rank.df.final)[colnames(rank.df.final) %in% celltype_condition_cols]
+    df <- rank.df.final[,colnames.in]
     
     #its percentile rank...ASD-CTL lets higher value have higher centrality in ASD
     df$diff.rank <- df[,2] - df[,1]
