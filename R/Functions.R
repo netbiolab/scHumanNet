@@ -192,7 +192,7 @@ DiffPR <- function(rank.df.final = NULL,
     control = conditions[conditions == control]
     disease = conditions[conditions != control]
     
-    #subset brain percentile rank
+    #subset df
     #either celltype_condition or condition_celltype
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
     colnames.in <- colnames(rank.df.final)[colnames(rank.df.final) %in% celltype_condition_cols]
@@ -285,7 +285,6 @@ FindDiffHub <- function(rank.df.final = NULL,
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
     colnames.in <- colnames(rank.df.final)[colnames(rank.df.final) %in% celltype_condition_cols]
     df <- rank.df.final[,colnames.in]
-    df <- rank.df.final[,c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'))]
     
     #get disease net # this is not needed in the null distribution generation
     disease.net.name <- paste(disease, celltype,sep = '_')
