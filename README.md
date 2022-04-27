@@ -43,7 +43,7 @@ packages in the `packages` folder.
 
 ``` bash
 $ conda create -n scHumanNet R==4.0
-$ git clone https://github.com/JunhaCha/scHumanNet.git
+$ git clone https://github.com/netbiolab/scHumanNet.git
 $ conda activate scHumanNet
 (scHumanNet) $ conda install --file ./scHumanNet/packages/requirements_scHumanNet.txt
 ```
@@ -58,7 +58,7 @@ Start R and install SCINET and scHumanNet.
 
 ``` r
 devtools::install_github("shmohammadi86/SCINET")
-devtools::install_github("JunhaCha/scHumanNet")
+devtools::install_github("netbiolab/scHumanNet")
 ```
 
 ### Load required libraries
