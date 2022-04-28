@@ -3,7 +3,7 @@
 
 # scHumanNet
 
-Construction of cell-type-specific functional gene network, with SCINET
+Construction and analysis of cell-type-specific functional gene network, with SCINET
 and HumanNetv3
 
 ### Framework Introduction
