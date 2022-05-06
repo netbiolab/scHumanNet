@@ -46,6 +46,7 @@ $ conda create -n scHumanNet R==4.0
 
 #if you do not have R version 4 and over in your default conda repo, type in the command below
 $ conda config --add channels conda-forge
+$ conda config --add channels bioconda
 
 $ git clone https://github.com/netbiolab/scHumanNet.git
 $ conda activate scHumanNet
