@@ -42,7 +42,7 @@ For running scHumanNet, we recommend a `conda` envrionment to install
 packages in the `packages` folder.
 
 ``` bash
-#if this is the first time you are using conda envrionment add conda-forge and bioconductor as your package search channels for installation of scHumanNet
+#if this is the first time you are using conda envrionment add following channels for installation of scHumanNet
 $ conda config --add channels conda-forge
 $ conda config --add channels bioconda
 
