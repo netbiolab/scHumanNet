@@ -42,11 +42,11 @@ For running scHumanNet, we recommend a `conda` envrionment to install
 packages in the `packages` folder.
 
 ``` bash
-$ conda create -n scHumanNet R==4.0
-
-#if you do not have R version 4 and over in your default conda repo, type in the command below
+#if this is the first time you are using conda envrionment add conda-forge and bioconductor as your package search channels for installation of scHumanNet
 $ conda config --add channels conda-forge
 $ conda config --add channels bioconda
+
+$ conda create -n scHumanNet R==4.0
 
 $ git clone https://github.com/netbiolab/scHumanNet.git
 $ conda activate scHumanNet
