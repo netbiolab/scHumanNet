@@ -1,9 +1,8 @@
 #' Find statistically significant hub genes in each scHumanNets
 #'
 #' @param net.list output of SortAddLLS. list of network dataframe
-#' @param centrality default is degree, which is calculated by sum of edge weights
-#' @param q.method default BH, input one of the following c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY",
-#   "fdr", "none")
+#' @param centrality default is degree centrality. available options are: c("degree", "betweenness","closeness", "eigenvector") degree is calculated with sum of weights. Weights are uniform in betweenness centrality.
+#' @param q.method default BH, input one of the following c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 #' @param threshold a threshold value to cut the significant hub genes. default 0.05
 #'
 #' @return a dataframe with Percentile Rank Centrality, gene, pvalue, qvalue and the celltype
