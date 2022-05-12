@@ -14,9 +14,9 @@ FindAllHub(
 \arguments{
 \item{net.list}{output of SortAddLLS. list of network dataframe}
 
-\item{centrality}{default is degree centrality. Available options are, c("degree", "betweenness","closeness", "eigenvector") degree is calculated with sum of weights. Weights are uniform in betweenness centrality.}
+\item{centrality}{default is "degree" centrality. Available options are: c("degree", "betweenness","closeness", "eigenvector"). Degree is calculated with sum of weights. Weights are uniform in betweenness and closeness centrality.}
 
-\item{q.method}{default BH, input one of the following c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")}
+\item{q.method}{default "BH", input one of the following c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")}
 
 \item{threshold}{a threshold value to cut the significant hub genes. default 0.05}
 }
