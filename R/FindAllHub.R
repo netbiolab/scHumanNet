@@ -21,7 +21,7 @@ FindAllHub <- function(net.list = NULL,
   
   # run this for all celltypes in the net.list
   final.df.list <- list()
-  centrality.list <- GetCentrality(net.list, method='degree')
+  centrality.list <- GetCentrality(net.list, method=centrality)
   for (celltype in names(net.list)){
     #progress bar
     print(paste0("Finding Hubs in ",celltype,"..."))
