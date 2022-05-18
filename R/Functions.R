@@ -292,7 +292,7 @@ FindDiffHub <- function(rank.df.final = NULL,
     shuffled.weight1 <- sample(E(disease.net)$LLS) #rewire does not suporte weight..so we are going to shuffle both node and edges, while preserving topology
     
     #get control net
-    control.net.name <- colnames.in[grep(control, colnames.in)]
+    control.net.name <- colnames.in[!(colnames.in %in% disease.net.name)]
     control.net <- igraph::graph_from_data_frame(net.list[[control.net.name]], directed = F)
     shuffled.weight2 <- sample(E(control.net)$LLS) #rewire does not suporte weight..so we are going to shuffle both node and edges, while preserving topology
     
