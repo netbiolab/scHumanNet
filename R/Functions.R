@@ -316,7 +316,7 @@ FindDiffHub <- function(rank.df.final = NULL,
 
     }
     else{
-      print(paste('not enough cells in', celltype,', excluding diffHub analysis...'))
+      print(paste(celltype,'has',nrow(control.cells),'cells in Control and', nrow(diseaes.cells),'\n cells in Disease. lower than min.cells threshold, skipping diffHub analysis...'))
 
     }
   }
