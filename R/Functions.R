@@ -278,7 +278,7 @@ FindDiffHub <- function(rank.df.final = NULL,
   }
 
   if (!(control %in% names(meta))){
-    print(paste('condition column', condition, 'does not exist in metadata'))
+    print(paste('condition', control, 'does not exist in condition column'))
     stop('this column should only have conditions')
   }
 
