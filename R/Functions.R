@@ -269,25 +269,21 @@ FindDiffHub <- function(rank.df.final = NULL,
   #check each parameter input
   if (!(celltypes %in% names(meta))){
     print(paste('celltypes column', celltypes, 'does not exist in metadata'))
-    print('this column should only have celltype names, not conditions...')
-    exit()
+    stop('this column should only have celltype names, not conditions...')
   }
 
   if (!(condition %in% names(meta))){
     print(paste('condition column', condition, 'does not exist in metadata'))
-    print('this column should only have conditions')
-    exit()
+    stop('this column should only have conditions')
   }
 
   if (!(control %in% names(meta))){
     print(paste('condition column', condition, 'does not exist in metadata'))
-    print('this column should only have conditions')
-    exit()
+    stop('this column should only have conditions')
   }
 
   if (!(q.method %in% c("BH","holm","hochberg","bonferroni","BY","fdr","none"))){
-    print('wrong input for Q-value method')
-    exit()
+    stop('wrong input for Q-value method')
   }
 
 
