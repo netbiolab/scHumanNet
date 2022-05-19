@@ -325,7 +325,10 @@ FindDiffHub <- function(rank.df.final = NULL,
 
   for (celltype in celltypes.analyze){
     #progress bar
-    print(paste0("Finding DiffHubs in ",celltype,"..."))
+    control.cells.analyze <- meta[(meta[,celltypes] == celltype & meta[,condition] == control),]
+    disease.cells.analyze <- meta[(meta[,celltypes] == celltype & meta[,condition] == disease),]
+
+    print(paste0("Finding", celltype, "DiffHubs between", nrow(control.cells.analyze), 'Control cells and', nrow(disease.cells.analyze),"Disease cells..."))
 
 
     #get diffPR.df of ctrl disase for each celltype
