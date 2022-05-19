@@ -266,6 +266,7 @@ FindDiffHub <- function(rank.df.final = NULL,
                         min.cells = 500){
 
 
+
   #check each parameter input
   if (!(celltypes %in% names(meta))){
     print(paste('celltypes column', celltypes, 'does not exist in metadata'))
@@ -287,12 +288,20 @@ FindDiffHub <- function(rank.df.final = NULL,
   }
 
 
+
   #set 1 core for data.table frank
   data.table::setDTthreads(threads = 1)
 
   #convert all factor column to character
   i <- sapply(meta, is.factor)
   meta[i] <- lapply(meta[i], as.character)
+
+
+  #get disease and control variables
+  conditions <- as.character(unique(meta[,condition]))
+  control = conditions[conditions == control]
+  disease = conditions[conditions != control]
+
 
   final.df.list <- list()
 
@@ -318,10 +327,6 @@ FindDiffHub <- function(rank.df.final = NULL,
     #progress bar
     print(paste0("Finding DiffHubs in ",celltype,"..."))
 
-    #get disease and control variables
-    conditions <- as.character(unique(meta[,condition]))
-    control = conditions[conditions == control]
-    disease = conditions[conditions != control]
 
     #get diffPR.df of ctrl disase for each celltype
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
