@@ -316,7 +316,7 @@ FindDiffHub <- function(rank.df.final = NULL,
 
     }
     else{
-      print(paste(celltype,'has',nrow(control.cells),'cells in Control and', nrow(diseaes.cells),'\n cells in Disease. lower than min.cells threshold, skipping diffHub analysis...'))
+      print(paste(celltype,'has',nrow(control.cells),'cells in Control and', nrow(diseaes.cells),'cells in Disease. Lower than min.cells threshold, skipping diffHub analysis...'))
 
     }
   }
@@ -328,7 +328,7 @@ FindDiffHub <- function(rank.df.final = NULL,
     control.cells.analyze <- meta[(meta[,celltypes] == celltype & meta[,condition] == control),]
     disease.cells.analyze <- meta[(meta[,celltypes] == celltype & meta[,condition] == disease),]
 
-    print(paste0("Finding", celltype, "DiffHubs between", nrow(control.cells.analyze), 'Control cells and', nrow(disease.cells.analyze),"Disease cells..."))
+    print(paste("Finding", celltype, "DiffHubs between", nrow(control.cells.analyze), 'Control cells and', nrow(disease.cells.analyze),"Disease cells..."))
 
 
     #get diffPR.df of ctrl disase for each celltype
