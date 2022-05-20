@@ -387,7 +387,7 @@ diffPR.df.sig
 | ZNF222 | 0.0009627728 | 0  | ZNF222 | -0.0009627728    | 0.9981590 | 0.9996602 | Others
 
 
-The second, is to extract top n percent of diffPR genes with the function `TopDiffHub()`. Input requires the output of DiffPR,
+The second, is to extract top n percent of diffPR genes with the function `TopDiffHub()`. Input requires the output of `DiffPR()`,
 and the user-defined top_percentage threshold (default 0.05). The output consists of a gene
 column, diffPR value sorted by absolute value, the top percengate value, and
 the celltype. To extract genes, use the `gene` column instead of
