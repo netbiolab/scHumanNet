@@ -7,7 +7,7 @@
 GetCentrality(method = method, net.list = NULL)
 }
 \arguments{
-\item{method}{Centrality measure to calcuate, supports degree(strength), betweenness, closeness, and eigenvector}
+\item{method}{Centrality measure to calculate, supports degree(strength), betweenness, closeness, and eigenvector}
 
 \item{net.list}{Output of SortAddLLS()}
 }

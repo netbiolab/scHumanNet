@@ -25,7 +25,7 @@ SortAddLLS <- function(Celltype.specific.networks = NULL, reference.network = gr
 #'
 #' @description Get centrality values for each nodes of scHumanNet list. Ribosomal genes are excluded when calculating centralities
 #'
-#' @param method Centrality measure to calcuate, supports degree(strength), betweenness, closeness, and eigenvector
+#' @param method Centrality measure to calculate, supports degree(strength), betweenness, closeness, and eigenvector
 #' @param net.list Output of SortAddLLS()
 #'
 #' @return List of named vector, each value corresponding to node's centrality value
@@ -179,16 +179,16 @@ DiffPR <- function(rank.df.final = NULL,
                    condition = NULL,
                    control = NULL,
                    meta = NULL){
-  
+
   #convert all factor column to character
   i <- sapply(meta, is.factor)
   meta[i] <- lapply(meta[i], as.character)
-  
+
   conditions <- as.character(unique(meta[,condition]))
   control = conditions[conditions == control]
   disease = conditions[conditions != control]
 
-  
+
   celltypes.analyze <- vector()
   for (celltype in unique(meta[,celltypes])){
 
@@ -196,7 +196,7 @@ DiffPR <- function(rank.df.final = NULL,
     #either celltype_condition or condition_celltype
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
     colnames.in <- colnames(rank.df.final)[colnames(rank.df.final) %in% celltype_condition_cols]
-    
+
     if (length(colnames.in) == 2){
       celltypes.analyze <- c(celltypes.analyze, celltype)
     }
@@ -204,7 +204,7 @@ DiffPR <- function(rank.df.final = NULL,
       next
     }
   }
-  
+
   rank.list <- list()
   for (celltype in celltypes.analyze){
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
@@ -212,22 +212,22 @@ DiffPR <- function(rank.df.final = NULL,
     df <- rank.df.final[,colnames.in]
     #its percentile rank...ASD-CTL lets higher value have higher centrality in ASD
     df$diff.rank <- df[,2] - df[,1]
-    
+
     #make a list for each celltype get genes that have the most rank differential
     rank.list[[celltype]] <- df$diff.rank
     names(rank.list[[celltype]]) <- rownames(df)
     rank.list[[celltype]] <- rank.list[[celltype]][order(abs(rank.list[[celltype]]), decreasing = T)]
   }
-  
+
   #check that all element of list contain same genes(all genes)
   df.final <- data.frame(matrix(nrow=length(rank.list[[1]]), ncol=2*length(rank.list)))
-  
+
   for (i in seq(1,length(rank.list))){
     t <- 2*i - 1
     df.final[,t] <- names(rank.list[[i]])
     df.final[,t+1] <- rank.list[[i]]
   }
-  
+
   column.name <- names(rank.list)
   final.column.names <- vector()
   for (i in seq_along(column.name)){
@@ -238,9 +238,9 @@ DiffPR <- function(rank.df.final = NULL,
     final.column.names[index+1] <- column.name2
   }
   colnames(df.final) <- final.column.names
-  
+
   return(df.final)
-  
+
 }
 
 
