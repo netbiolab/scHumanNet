@@ -20,6 +20,6 @@ A list. First element the null distribution of connectivity from rejection sampl
 Deconvolution of geneset connectivity for each scHumanNet constructed
 }
 \examples{
-data("ICMs")
+data("ICMs_auslander")
 Connectivity(network.list = sorted.net.list, geneset = icm.genes)
 }

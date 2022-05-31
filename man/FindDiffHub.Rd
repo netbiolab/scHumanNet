@@ -12,7 +12,8 @@ FindDiffHub(
   meta = NULL,
   net.list = NULL,
   centrality = "degree",
-  q.method = "BH"
+  q.method = "BH",
+  min.cells = 500
 )
 }
 \arguments{
@@ -24,13 +25,15 @@ FindDiffHub(
 
 \item{control}{character string that specific which value is the control}
 
-\item{meta}{metadata data.frame used for this analayiss}
+\item{meta}{metadata data.frame used for this analayis}
 
 \item{net.list}{Output of SortAddLLS, network list to perfrom the analysis}
 
 \item{centrality}{the centrality method used in the getCentrality. both must match! this is used to find the null distribution}
 
 \item{q.method}{Method to perfrom multiple testing correction. accepted values are: c("BH","holm","hochberg","bonferroni","BY","fdr","none")}
+
+\item{min.cells}{minimum cells required to perform diff network analysis default value is 500}
 }
 \value{
 Dataframe Percentile rank of centrality of each networks, their difference, and their statistical significance
