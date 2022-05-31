@@ -12,21 +12,21 @@
 #' data("ICMs")
 #' DeconvoluteNet(network.list = sorted.net.list, geneset = icm.genes)
 DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
-    
+
     #get node list for each celltype
     node.list <- lapply(network.list, function(net){
       genes.all <- unique(c(as.character(net[,1]),as.character(net[,2])))
     })
     names(node.list) <- names(network.list)
-    
-    
+
+
     #check if geneset is a list
     if (is.list(geneset)){
       #if the list does not have a specific name provide them as default
       if (is.null(names(geneset))){
         names(geneset) <- paste0('Geneset_',seq(length(geneset)))
       }
-      
+
       sig.list <- list()
       for (i in seq_along(geneset)){
         sig.genes <- geneset[[i]]
@@ -37,19 +37,19 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
         connectivity.sig <- dplyr::bind_rows(connectivity.sig)
         sig.list[[i]] <- connectivity.sig
       }
-      
+
       connectivity.sig.all <- as.data.frame(dplyr::bind_rows(sig.list))
       rownames(connectivity.sig.all) <- names(geneset)
-      
+
       df <- t(connectivity.sig.all)
-      
+
       # Gathering data, rearragne datraframe
       data <- reshape2::melt(df)
       colnames(data) <- c('scHumanNet', 'signature_name', 'connectivity')
-      
+
       #add gene sig length
       data$signature_gene_num <- lengths(bc.sig.list[as.character(data$signature_name)])
-      
+
       #add geneset length detected in each celltype net
       detected.sig <- list()
       for (i in seq_along(table(data$signature_name))){
@@ -58,22 +58,22 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
         names(sig.f) <- names(node.list)
         detected.sig[[i]] <- sig.f
       }
-      
+
       names(detected.sig) <- names(table(data$signature_name))
       detected.sig <- unlist(detected.sig)
       data$detected.sig.num <- detected.sig
-      
+
       #normalize connectivity count values by number of signature genes
       #data$connectivity.n <- data$connectivity / data$signature_gene_num
       data$connectivity.normalized <- data$connectivity / data$detected.sig.num
-      
+
       #remove signatures with all colSum 0
       low.signames <- colnames(as.data.frame(df[,colSums(df) == 0]))
       data.f <- data[!(data$signature_name %in% low.signames),]
       print(paste('Signatures', low.signames, 'discarded'))
       data.f <- data.f[!is.nan(data.f$connectivity.normalized),]
       data.f <- droplevels(data.f)
-      
+
     }
     else{
       print('Only one geneset detected')
@@ -84,32 +84,32 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
       })
       connectivity.sig <- dplyr::bind_rows(connectivity.sig)
       sig.list[[1]] <- connectivity.sig
-      
+
       connectivity.sig.all <- as.data.frame(dplyr::bind_rows(sig.list))
       df <- t(connectivity.sig.all)
-      
+
       # Gathering data, rearragne datraframe
       data <- as.data.frame(df)
       colnames(data) <- 'connectivity'
-      
+
       #add gene sig length
       data$signature_gene_num <- rep(length(geneset), nrow(data))
-      
+
       #add genes detected within the geneset in each celltype net
       sig.f <- lapply(node.list, function(node){length(geneset[geneset %in% node])})
       detected.sig <- unlist(sig.f)
       data$detected.sig.num <- detected.sig #user can know how many of their genesets were actually in the scHumanNets, but normalization does not happen here becuase detected num also is part of the connectivity measurement
-      
+
       #normalize connectivity count values by number of signature genes....
       #data$connectivity.n <- data$connectivity / data$signature_gene_num
       #data$connectivity.n.detected <- data$connectivity / data$detected.sig.num ...this is not informative in single geneset undection should also be regarded
-      
+
       data.f <- data
       if (data.f$connectivity == 0){
         print('this geneset had no connectivity in this network. try a different geneset')
       }
     }
-    
+
     return(data.f)
 }
 
@@ -127,7 +127,7 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
 #' @export
 #'
 #' @examples
-#' data("ICMs")
+#' data("ICMs_auslander")
 #' Connectivity(network.list = sorted.net.list, geneset = icm.genes)
 Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
 
@@ -167,7 +167,14 @@ Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
 
       #pick a pool of nodes that have within +-20 percent of nodes
       degree.range <- c(floor(0.8 * gene.degree), ceiling(1.2 * gene.degree))
-      node.pool <- degree.centrality.f[degree.range[1] <= degree.centrality.f | degree.centrality.f >= degree.range[2]]
+
+      #gene pool that meets criteria
+      node.pool <- degree.centrality.f[degree.range[1] <= degree.centrality.f & degree.centrality.f <= degree.range[2]]
+
+      #handle exception, if no genes meet criteria, the gene is disregarded
+      if (length(node.pool) == 0){
+        break
+      }
 
       #pick a random node from this pool
       gene.random <- sample(names(node.pool), 1)
@@ -185,12 +192,12 @@ Connectivity <- function(network = NULL, geneset = NULL, simulate.num = 10000){
 
   #get pvalue of user geneset connectivty and the connectiviity.random
   connectivity <- nrow(network[(network[,1] %in% geneset & network[,2] %in% geneset), ])
-  print(paste("This geneset had", connectivity, "within-group edges in the network"))  
+  print(paste("This geneset had", connectivity, "within-group edges in the network"))
   connectivity.final <- c(connectivity.random, connectivity)
   pvalue <- rank(-(connectivity.final),ties.method = 'last')[simulate.num + 1] / simulate.num
   #distribution
   output.list <- list(null.distribution = connectivity.random, p.value = pvalue, detected.geneset = detected.genes, observed = connectivity)
-  
+
   return(output.list)
 }
 
