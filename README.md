@@ -84,7 +84,7 @@ library(dplyr)
 ## Construction of scHumanNet (Example 1)
 
 For the first example case, we showcase the construction of scHumanNet
-using publically accessivble pan-cancer dataset from [Qian et al. Cell
+using publically accessible pan-cancer dataset from [Qian et al. Cell
 Research
 2020](https://www-nature-com.ezp-prod1.hul.harvard.edu/articles/s41422-020-0355-0).
 The 10X count folder and the metadata can be downloaded from
