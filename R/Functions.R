@@ -195,7 +195,7 @@ DiffPR <- function(rank.df.final = NULL,
     #subset df
     #either celltype_condition or condition_celltype
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
-    colnames.in <- colnames(rank.df.final)[colnames(rank.df.final) %in% celltype_condition_cols]
+    colnames.in <- celltype_condition_cols[celltype_condition_cols %in% colnames(rank.df.final)]
 
     if (length(colnames.in) == 2){
       celltypes.analyze <- c(celltypes.analyze, celltype)
@@ -208,7 +208,7 @@ DiffPR <- function(rank.df.final = NULL,
   rank.list <- list()
   for (celltype in celltypes.analyze){
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
-    colnames.in <- colnames(rank.df.final)[colnames(rank.df.final) %in% celltype_condition_cols]
+    colnames.in <- celltype_condition_cols[celltype_condition_cols %in% colnames(rank.df.final)]
     df <- rank.df.final[,colnames.in]
     #its percentile rank...ASD-CTL lets higher value have higher centrality in ASD
     df$diff.rank <- df[,2] - df[,1]
@@ -242,6 +242,7 @@ DiffPR <- function(rank.df.final = NULL,
   return(df.final)
 
 }
+
 
 
 
@@ -346,7 +347,7 @@ FindDiffHub <- function(rank.df.final = NULL,
 
     #get diffPR.df of ctrl disase for each celltype
     celltype_condition_cols <- c(paste(control, celltype, sep = '_'), paste(disease, celltype,sep = '_'), paste(celltype, control, sep = '_'), paste(celltype, disease,sep = '_'))
-    colnames.in <- colnames(rank.df.final)[colnames(rank.df.final) %in% celltype_condition_cols]
+    colnames.in <- celltype_condition_cols[celltype_condition_cols %in% colnames(rank.df.final)]
     df <- rank.df.final[,colnames.in]
 
     #get disease net # this is not needed in the null distribution generation
