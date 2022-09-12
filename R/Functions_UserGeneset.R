@@ -48,7 +48,7 @@ DeconvoluteNet <- function(network.list = NULL, geneset = NULL){
       colnames(data) <- c('scHumanNet', 'signature_name', 'connectivity')
 
       #add gene sig length
-      data$signature_gene_num <- lengths(bc.sig.list[as.character(data$signature_name)])
+      data$signature_gene_num <- lengths(geneset[as.character(data$signature_name)])
 
       #add geneset length detected in each celltype net
       detected.sig <- list()
