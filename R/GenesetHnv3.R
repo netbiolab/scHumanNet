@@ -36,8 +36,8 @@ GenesetHnv3 <- function(geneset = NULL, reference.network = graph.hn3){
     sig.detect <- unlist(sig.detect)
 
     hnv3.connectivity.sig <- as.data.frame(unlist(hnv3.conn.list))
-    rownames(hnv3.connectivity.sig) <- names(bc.sig.list)
-    hnv3.connectivity.sig$siggene_num <- lengths(bc.sig.list)
+    rownames(hnv3.connectivity.sig) <- names(geneset)
+    hnv3.connectivity.sig$siggene_num <- lengths(geneset)
     hnv3.connectivity.sig$siggene_num_detected <- sig.detect
     hnv3.connectivity.sig$name <- rownames(hnv3.connectivity.sig)
     colnames(hnv3.connectivity.sig)[1] <- 'connectivity'
