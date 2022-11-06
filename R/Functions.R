@@ -141,11 +141,11 @@ TopHub <- function(rank.df.final = NULL, top.n = NULL){
   for (cell in colnames(rank.df.final)){
     perc.rank <- unlist(rank.df.final[cell])
     names(perc.rank) <- rownames(rank.df.final)
-    perc.rank.top <- head(names(perc.rank[order(perc.rank, decreasing = T)]),50)
+    perc.rank.top <- head(names(perc.rank[order(perc.rank, decreasing = T)]),top.n)
     top.genes[[cell]] <- perc.rank.top
   }
 
-  top.df <- data.frame(matrix(ncol = 1, nrow = 50))
+  top.df <- data.frame(matrix(ncol = 1, nrow = top.n))
   for (genes in top.genes){
     top.df <- cbind(top.df,genes)
   }
