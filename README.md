@@ -147,7 +147,7 @@ lapply(sorted.net.list, head)
 saveRDS(sorted.net.list, './sorted_el_list.rds')
 ```
 
-scHumanNet package provides a statistical framework to threshold functional hub genes from each cell-type specific networks via `FindAllHub()`. Briefly, it creates a null model of random networks by swapping edges with equal probability, thus creating a distribution of centralty values. Each hub's centrality is measured against this null distribution and a p-value is calculated. Default correction method is Benjamini-Hochberg method and the default threshold cut value is FDR < 0.05. To filter for genes, use the `gene` column and not the rownames.
+scHumanNet package provides a statistical framework to threshold functional hub genes from each cell-type specific networks via `FindAllHub()`. Briefly, it creates a null model of random networks by swapping edges with equal probability, thus creating a distribution of centrality values. Each hub's centrality is measured against this null distribution and a p-value is calculated. Default correction method is Benjamini-Hochberg method and the default threshold cut value is FDR < 0.05. To filter for genes, use the `gene` column and not the rownames.
 
 ``` r
 sig.hub.df <- FindAllHub(sorted.net.list, centrality="degree")
