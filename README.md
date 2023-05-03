@@ -24,7 +24,7 @@ downstream analysis.
 For a given scRNA-seq data set, the SCINET framework utilize imputation,
 transformation, and normalization from the [ACTIONet package(Mohammadi
 et al. Nat. Commun.
-2018)](https://www-nature-com.ezp-prod1.hul.harvard.edu/articles/s41467-020-18416-6)
+2018)](https://doi.org/10.1038/s41467-020-18416-6)
 to robustly capture cell-level gene interactions. HumanNet v3 with 1.1
 million weighted edges are used as a scaffold information to infer the
 likelihood of each gene interactions. A subsampling scheme for each
