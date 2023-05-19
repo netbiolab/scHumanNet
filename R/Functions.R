@@ -70,6 +70,7 @@ GetCentrality <- function(method = method, net.list = NULL){
 
     #to normalize for network size, we use percentile rank
     final.rank <- dplyr::percent_rank(genes.cent.f)
+    names(final.rank) <- names(genes.cent.f)
     cell.list[[cell.net]] <- final.rank
   }
   names(cell.list) <- names(net.list)
