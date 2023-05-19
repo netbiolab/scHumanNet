@@ -271,7 +271,7 @@ DiffPR <- function(rank.df.final = NULL,
 #' diffPR.df <- DiffPR(rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta)
 #' diffPR.df.sig <- FindDiffHub(rank.df.final = rank.df.final, celltypes = 'celltypes_merged', condition = 'diagnosis', control = 'Control', meta = meta, net.list=sorted.net.list, q.method='BH', centrality="degree")
 FindDiffHub <- function(rank.df.final = NULL,
-                        celltypes = NULL ,
+                        celltypes = NULL,
                         condition = NULL,
                         control = NULL,
                         meta = NULL,
