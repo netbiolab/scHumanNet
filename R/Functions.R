@@ -158,7 +158,7 @@ TopHub <- function(rank.df.final = NULL, top.n = NULL){
 
 #' DiffPR
 #'
-#' @description Get differnence of normalized centrality values from the output of GetCentrality()
+#' @description Get difference of normalized centrality values from the output of GetCentrality()
 #'
 #' @param rank.df.final Output of CombinePercRank
 #' @param meta meta.data Dataframe that contatins annotated celltypes and condition columns
