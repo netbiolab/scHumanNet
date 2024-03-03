@@ -45,13 +45,15 @@ packages in the `packages` folder.
 #if this is the first time you are using conda envrionment add following channels for installation of scHumanNet
 $ conda config --add channels conda-forge
 $ conda config --add channels bioconda
-
-$ conda create -n scHumanNet R==4.0
-
 $ git clone https://github.com/netbiolab/scHumanNet.git
+
+$ conda create -n scHumanNet -f ./scHumanNet/packages/scHumanNet_env.yml
+
 $ conda activate scHumanNet
 (scHumanNet) $ conda install --file ./scHumanNet/packages/requirements_scHumanNet.txt
 ```
+
+
 
 Install the modified version of ACTIONet.
 
