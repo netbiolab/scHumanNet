@@ -47,9 +47,9 @@ $ conda config --add channels conda-forge
 $ conda config --add channels bioconda
 $ git clone https://github.com/netbiolab/scHumanNet.git
 
-$ conda create -n scHumanNet -f ./scHumanNet/packages/scHumanNet_env.yml
+$ conda env create -n scHumanNet -f ./scHumanNet/packages/scHumanNet_env.yml
 
-$ conda activate scHumanNet
+$ conda activate scHumanNet and check whether appropriate files have been installed
 (scHumanNet) $ conda install --file ./scHumanNet/packages/requirements_scHumanNet.txt
 ```
 
