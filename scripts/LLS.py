@@ -43,7 +43,7 @@ def calc_pearsonr_fast(expr_data, absort = True):
     return edges_all
 '''
 
-def read_edgelist(file_path):
+def read_edgelist(file_path: str) -> dict:
     net = pd.read_csv(file_path, sep='\t')
     net.columns = ['gene1', 'gene2', 'PCC']
 
@@ -55,7 +55,7 @@ def read_edgelist(file_path):
     net.index = net.genepair
     edges_all = net.loc[:,'PCC'] #series
 
-    return edges_all
+    return edges_all.to_dict()
 
 def load_gold_standard_pairs(gsfile):
     network = dict()
@@ -72,8 +72,16 @@ def load_gold_standard_pairs(gsfile):
             network[b][a] = True
     return network
 
-def run_benchmark_LLS(target_network, gold_standard_pairs, already_sorted = True, ascending = False, max_pair = 1000000,binsize=1000):
-
+def run_benchmark_LLS(
+    target_network: dict,
+    gold_standard_pairs: dict,
+    already_sorted = True, ascending = False, max_pair = 1000000,binsize=1000,
+    ) -> pd.DataFrame:
+    """
+    Args:
+        target_network (dict): key'd by tuple of gene pairs.
+        gold_standard_pairs (dict): key'd by genes in the pairs.
+    """
     # calculate positive, negative pairs
 
     pos = 0
