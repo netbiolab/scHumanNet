@@ -1,10 +1,13 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # scHumanNet
 
-Construction and analysis of cell-type-specific functional gene network, with SCINET
-and HumanNetv3
+**Construction and analysis of cell-type-specific functional gene network with SCINET and HumanNetv3**
+
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![R](https://img.shields.io/badge/R-4.0+-blue.svg)](https://r-project.org)
+
+A unified mono-repository providing both R and Python implementations for constructing and analyzing cell-type-specific functional gene networks using single-cell RNA-seq data.
 
 ### Framework Introduction
 
@@ -36,53 +39,152 @@ construction of context specific cell-type networks, also allow an
 in-depth study of disease heterogeneity and its underlying mechanism at
 a cellular level.
 
-### Setting up the Environment
+## Installation
 
-For running scHumanNet, we recommend a `conda` envrionment to install
-packages in the `packages` folder.
+### Python Package
 
-``` bash
-#if this is the first time you are using conda envrionment add following channels for installation of scHumanNet
-$ conda config --add channels conda-forge
-$ conda config --add channels bioconda
-$ git clone https://github.com/netbiolab/scHumanNet.git
+Install the Python package from the repository:
 
-$ conda env create -n scHumanNet -f ./scHumanNet/packages/scHumanNet_env.yml
-$ conda activate scHumanNet
+```bash
+# Clone the repository
+git clone https://github.com/netbiolab/scHumanNet.git
+cd scHumanNet
 
-#check whether appropriate dependencies have been installed
-(scHumanNet) $ conda install --file ./scHumanNet/packages/requirements_scHumanNet.txt
+# Install Python package
+pip install -e .
+
+# Or install with development dependencies
+pip install -e ".[dev]"
 ```
 
+### R Package
 
+Install the R package:
 
-Install the modified version of ACTIONet.
+```r
+# Install from the r-package directory
+devtools::install("./r-package")
 
-``` bash
-(scHumanNet) $ R CMD INSTALL ./scHumanNet/packages/ACTIONet_2.0.18_HNv3
-```
-
-Start R and install SCINET and scHumanNet.
-
-``` r
+# Or install required dependencies first
+install.packages(c("igraph", "dplyr", "data.table"))
 devtools::install_github("shmohammadi86/SCINET")
-devtools::install_github("netbiolab/scHumanNet")
 ```
 
-### Load required libraries
+### Conda Environment (Optional)
 
-(add Seurat if necessary)
+For a complete environment with both R and Python:
 
-``` r
+```bash
+conda config --add channels conda-forge
+conda config --add channels bioconda
+conda env create -n scHumanNet -f packages/scHumanNet_env.yml
+conda activate scHumanNet
+```
+
+## Quick Start
+
+### Python
+
+```python
+import schumannet as schn
+import pandas as pd
+
+# Load your networks and metadata
+networks = schn.load_networks("path/to/networks/")
+metadata = pd.read_csv("metadata.csv")
+
+# Sort networks and add LLS weights
+sorted_networks = schn.sort_add_lls(networks)
+
+# Find hub genes
+hub_results = schn.find_all_hub(sorted_networks, centrality='degree')
+
+# Differential analysis
+centralities = schn.get_centrality('degree', sorted_networks)
+rank_df = schn.combine_perc_rank(centralities)
+diff_results = schn.find_diff_hub(
+    rank_df, metadata, 'celltype', 'condition', 'Control', sorted_networks
+)
+```
+
+### R
+
+```r
 library(scHumanNet)
-library(ACTIONet)
-library(SCINET)
-library(Seurat)
 library(igraph)
-library(SingleCellExperiment)
-library(purrr)
 library(dplyr)
+
+# Load your data
+data('HNv3_XC_LLS')
+sorted.net.list <- SortAddLLS(Celltype.specific.networks, graph.hn3)
+
+# Find hub genes
+sig.hub.df <- FindAllHub(sorted.net.list, centrality="degree")
+
+# Differential analysis
+strength.list <- GetCentrality(method='degree', net.list = sorted.net.list)
+rank.df.final <- CombinePercRank(strength.list)
+diffPR.df.sig <- FindDiffHub(rank.df.final, meta, 'celltype', 'condition', 
+                             'Control', sorted.net.list)
 ```
+
+### Command Line Interface
+
+The Python package includes a CLI for common tasks:
+
+```bash
+# Find hub genes
+schumannet find-hubs --networks ./networks/ --output hub_results.csv
+
+# Differential analysis
+schumannet diff-analysis --networks ./networks/ --metadata meta.csv \
+  --celltype-col celltype --condition-col condition --control Control \
+  --output diff_results.csv
+
+# Calculate network statistics
+schumannet network-stats --networks ./networks/ --output network_stats.csv
+```
+
+## Repository Structure
+
+```
+scHumanNet/
+├── python/schumannet/          # Python package
+│   ├── __init__.py
+│   ├── core.py                 # Core analysis functions
+│   ├── utils.py                # Utility functions
+│   └── cli.py                  # Command-line interface
+├── r-package/                  # R package
+│   ├── R/                      # R source code
+│   ├── man/                    # R documentation
+│   ├── DESCRIPTION
+│   └── NAMESPACE
+├── data/                       # Shared data files
+├── examples/                   # Example scripts
+│   ├── python_example.py
+│   └── r_example.R
+├── docs/                       # Documentation
+├── figures/                    # Analysis scripts for figures
+├── scripts/                    # Additional scripts
+├── setup.py                    # Python package setup
+├── pyproject.toml             # Python package configuration
+└── README.md
+```
+
+## Key Features
+
+- **Dual Language Support**: Both R and Python implementations with identical functionality
+- **Statistical Framework**: Non-parametric testing for hub gene significance
+- **Differential Analysis**: Compare networks between conditions/cell types
+- **Network Connectivity**: Assess functional connectivity of gene sets
+- **Command Line Tools**: Easy-to-use CLI for common workflows
+- **Comprehensive Documentation**: API reference and examples
+
+## Documentation
+
+- [API Reference](docs/API.md) - Detailed function documentation
+- [Python Example](examples/python_example.py) - Complete Python workflow
+- [R Example](examples/r_example.R) - Complete R workflow
 
 ## Construction of scHumanNet (Example 1)
 
