@@ -1,0 +1,7 @@
+include README.md
+include LICENSE.txt
+include pyproject.toml
+recursive-include python/schumannet *.py
+recursive-include data *.rda
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
